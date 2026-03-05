@@ -1,21 +1,23 @@
 {
   "name": "byjg/b8",
   "type": "library",
-  "description": "PHP spam filter",
+  "description": "A statistical (Bayesian) spam filter written in PHP",
   "keywords": ["spam", "filter"],
   "homepage": "https://github.com/byjg/b8",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "byjg/micro-orm": "4.9.*",
-    "php": ">=7.4"
+    "byjg/micro-orm": "^6.0",
+    "byjg/migration": "^6.0",
+    "php": ">=8.3 <8.6"
   },
   "suggest": {
     "ext-mbstring": "*",
     "ext-dba": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.7.*|7.4.*|^9.6",
+    "phpunit/phpunit": "^10.5|^11.5",
+    "vimeo/psalm": "^5.9|^6.13",
     "ext-dba": "*"
   },
   "autoload": {
@@ -24,5 +26,12 @@
     }
   },
   "autoload-dev": {
+    "psr-4": {
+      "Test\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "psalm": "vendor/bin/psalm --threads=1"
   }
 }

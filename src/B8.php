@@ -48,22 +48,22 @@ class B8
     /**
      * @var ConfigB8
      */
-    protected $config = null;
+    protected ConfigB8 $config;
 
     /**
      * @var StorageInterface
      */
-    protected $storage     = null;
+    protected StorageInterface $storage;
 
     /**
      * @var LexerInterface
      */
-    protected $lexer       = null;
+    protected LexerInterface $lexer;
 
     /**
-     * @var DegeneratorInterface
+     * @var DegeneratorInterface|null
      */
-    public $degenerator = null;
+    public ?DegeneratorInterface $degenerator = null;
 
     private $_token_data = null;
 
@@ -172,8 +172,8 @@ class B8
 
         # Calculate the spamminess of the text (thanks to Mr. Robinson ;-)
         # We set both hamminess and spamminess to 1 for the first multiplying
-        $hamminess  = 1;
-        $spamminess = 1;
+        $hamminess  = 1.0;
+        $spamminess = 1.0;
 
         # Consider all relevant ratings
         foreach ($relevant as $value) {
@@ -193,14 +193,14 @@ class B8
         $n = count($relevant);
 
         # The actual hamminess and spamminess
-        $hamminess  = 1 - pow($hamminess,  (1 / $n));
-        $spamminess = 1 - pow($spamminess, (1 / $n));
+        $hamminess  = 1.0 - pow($hamminess,  (1.0 / (float)$n));
+        $spamminess = 1.0 - pow($spamminess, (1.0 / (float)$n));
 
         # Calculate the combined indicator
         $probability = ($hamminess - $spamminess) / ($hamminess + $spamminess);
 
         # We want a value between 0 and 1, not between -1 and +1, so ...
-        $probability = (1 + $probability) / 2;
+        $probability = (1.0 + $probability) / 2.0;
 
         # Alea iacta est
         return $probability;
@@ -294,10 +294,10 @@ class B8
      * Check the validity of the category of a request
      *
      * @access private
+     *
      * @param string $category
-     * @return string
      */
-    private function _checkCategory($category)
+    private function _checkCategory($category): bool
     {
         return $category === self::HAM or $category === self::SPAM;
     }

@@ -38,9 +38,9 @@ abstract class Base implements StorageInterface
 {
 
     /**
-     * @var DegeneratorInterface
+     * @var DegeneratorInterface|null
      */
-    protected $degenerator = null;
+    protected ?DegeneratorInterface $degenerator = null;
 
     const INTERNALS_TEXTS     = 'b8*texts';
     const INTERNALS_DBVERSION = 'b8*dbversion';
@@ -51,6 +51,7 @@ abstract class Base implements StorageInterface
      * @return void throws an exception if something's wrong with the database
      * @throws Exception
      */
+    #[\Override]
     public function checkVersion()
     {
         $this->storageOpen();
@@ -72,6 +73,7 @@ abstract class Base implements StorageInterface
      * @access public
      * @return Word Returns an array of all internals.
      */
+    #[\Override]
     public function getInternals()
     {
         $this->storageOpen();
@@ -90,6 +92,7 @@ abstract class Base implements StorageInterface
      * in the format array('tokens' => array(token => count),
      * 'degenerates' => array(token => array(degenerate => count))).
      */
+    #[\Override]
     public function getTokens($tokens)
     {
         $this->storageOpen();
@@ -109,6 +112,7 @@ abstract class Base implements StorageInterface
             # We have to degenerate some tokens
             $degenerates_list = array();
 
+            assert($this->degenerator !== null);
             # Generate a list of degenerated tokens for the missing tokens ...
             $degenerates = $this->degenerator->degenerate($missing_tokens);
 
@@ -134,6 +138,7 @@ abstract class Base implements StorageInterface
             } else {
                 # The token was not found, so we look if we
                 # can return data for degenerated tokens
+                assert($this->degenerator !== null);
                 foreach ($this->degenerator->getDegenerates($token) as $degenerate) {
                     if (isset($token_data[$degenerate]) === true) {
                         # A degeneration of the token way found in the database
@@ -160,6 +165,7 @@ abstract class Base implements StorageInterface
      * @param string $action Either b8::LEARN or b8::UNLEARN
      * @return void
      */
+    #[\Override]
     public function processText($tokens, $category, $action)
     {
         # No matter what we do, we first have to check what data we have.

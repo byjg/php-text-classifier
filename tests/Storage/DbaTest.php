@@ -11,13 +11,12 @@ use B8\Storage\Rdbms;
 use B8\Storage\StorageInterface;
 use PHPUnit\Framework\TestCase;
 
-class DbaTest extends BaseTest
+class DbaTest extends BaseTestCase
 {
     protected function setUp(): void
     {
         $this->path = "/tmp/wordlist.db";
         $this->tearDown();
-        copy(__DIR__ . "/../db/wordlist.db", $this->path);
 
         $degenerator = new StandardDegenerator(
             (new ConfigDegenerator())
@@ -28,5 +27,6 @@ class DbaTest extends BaseTest
             $this->path,
             $degenerator
         );
+        $this->storage->createDatabase();
     }
 }

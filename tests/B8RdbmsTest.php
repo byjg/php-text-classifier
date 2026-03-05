@@ -12,16 +12,15 @@ use B8\Lexer\StandardLexer;
 use B8\Storage\Rdbms;
 use ByJG\Util\Uri;
 
-require_once 'B8Test.php';
+require_once 'B8TestCase.php';
 
 
-class B8RdbmsTest extends B8Test
+class B8RdbmsTest extends B8TestCase
 {
     protected function setUp(): void
     {
         $this->path = "/tmp/sqlite.db";
         $this->tearDown();
-        copy(__DIR__ . "/db/sqlite.db", $this->path);
 
         $lexer = new StandardLexer(
             (new ConfigLexer())
@@ -39,6 +38,7 @@ class B8RdbmsTest extends B8Test
             $uri,
             $degenerator
         );
+        $storage->createDatabase();
 
         $this->b8 = new B8(new ConfigB8(), $storage, $lexer);
     }

@@ -10,13 +10,12 @@ use B8\Storage\Rdbms;
 use B8\Storage\StorageInterface;
 use PHPUnit\Framework\TestCase;
 
-class RdbmsTest extends BaseTest
+class RdbmsTest extends BaseTestCase
 {
     protected function setUp(): void
     {
         $this->path = "/tmp/sqlite.db";
         $this->tearDown();
-        copy(__DIR__ . "/../db/sqlite.db", $this->path);
 
         $degenerator = new StandardDegenerator(
             (new ConfigDegenerator())
@@ -28,5 +27,6 @@ class RdbmsTest extends BaseTest
             $uri,
             $degenerator
         );
+        $this->storage->createDatabase();
     }
 }

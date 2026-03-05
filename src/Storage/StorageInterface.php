@@ -27,7 +27,7 @@ interface StorageInterface
      * @param array|string $tokens
      * @return Word[]
      */
-    public function storageRetrieve($tokens);
+    public function storageRetrieve(array|string $tokens);
 
     public function storagePut($word);
 

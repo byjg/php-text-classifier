@@ -49,6 +49,7 @@ class StandardDegenerator implements DegeneratorInterface
         $this->config = $config;
     }
 
+    #[\Override]
     public function getDegenerates($token)
     {
         return $this->degenerates[$token];
@@ -61,6 +62,7 @@ class StandardDegenerator implements DegeneratorInterface
      * @param array $words
      * @return array An array containing an array of degenerated tokens for each token
      */
+    #[\Override]
     public function degenerate(array $words)
     {
         $degenerates = array();
@@ -80,7 +82,7 @@ class StandardDegenerator implements DegeneratorInterface
      * @param array $list The list to process
      * @return array The list without duplicates
      */
-    protected function _deleteDuplicates($word, $list)
+    protected function _deleteDuplicates(string $word, $list)
     {
         $list_processed = array();
 
@@ -109,6 +111,9 @@ class StandardDegenerator implements DegeneratorInterface
         }
 
         # Create different versions of upper and lower case
+        $lower = $word;
+        $upper = $word;
+        $first = $word;
         if ($this->config->isMultibyte() === false) {
             # The standard upper/lower versions
             $lower = strtolower($word);
