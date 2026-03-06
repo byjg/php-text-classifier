@@ -44,7 +44,7 @@ if ($score > 0.9) {
 
 ## Relevance filtering
 
-b8 does not use all tokens in the text. It selects the most "relevant" tokens — those whose spam probability deviates most from `0.5`. The number of tokens considered is controlled by `ConfigB8::setUseRelevant()` (default: `15`) and the minimum deviation threshold `ConfigB8::setMinDev()` (default: `0.2`).
+b8 does not use all tokens in the text. It selects the most "relevant" tokens — those whose spam probability deviates most from `0.5`. The number of tokens considered is controlled by `ConfigBinaryClassifier::setUseRelevant()` (default: `15`) and the minimum deviation threshold `ConfigBinaryClassifier::setMinDev()` (default: `0.2`).
 
 Tokens that appear multiple times in the text contribute proportionally — a token appearing three times counts three times in the probability calculation.
 
@@ -58,7 +58,7 @@ When a token is not found in the database, b8 tries degenerated variants (case v
 
 | Constant | Meaning |
 |---|---|
-| `B8::CLASSIFYER_TEXT_MISSING` | `$text` was `null` |
+| `BinaryClassifier::CLASSIFYER_TEXT_MISSING` | `$text` was `null` |
 | `StandardLexer::LEXER_TEXT_NOT_STRING` | `$text` is not a string |
 | `StandardLexer::LEXER_TEXT_EMPTY` | `$text` is an empty string |
 
@@ -74,5 +74,5 @@ if (!is_float($score)) {
 ## Related
 
 - [How B8 works](../../concepts/how-b8-works.md) — the Robinson-Fisher algorithm explained
-- [ConfigB8 reference](../../reference/config-b8.md) — all tuning parameters
+- [ConfigBinaryClassifier reference](../../reference/config-b8.md) — all tuning parameters
 - [Error codes reference](../../reference/error-codes.md)

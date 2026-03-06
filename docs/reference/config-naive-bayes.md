@@ -22,8 +22,8 @@ new ConfigNaiveBayes(float $robS = 1.0, float $robX = 0.5)
 ## Usage
 
 ```php
-use B8\NaiveBayes\ConfigNaiveBayes;
-use B8\NaiveBayes\NaiveBayes;
+use ByJG\TextClassifier\NaiveBayes\ConfigNaiveBayes;
+use ByJG\TextClassifier\NaiveBayes\NaiveBayes;
 
 // Default config
 $nb = new NaiveBayes($storage, $lexer);
@@ -55,11 +55,11 @@ The neutral prior. `0.5` means "no information" — a token never seen in any ca
 | `getRobS()` | `float` |
 | `getRobX()` | `float` |
 
-## Comparison with ConfigB8
+## Comparison with ConfigBinaryClassifier
 
-`ConfigNaiveBayes` has different defaults than `ConfigB8` because the algorithms differ:
+`ConfigNaiveBayes` has different defaults than `ConfigBinaryClassifier` because the algorithms differ:
 
-| Parameter | ConfigB8 default | ConfigNaiveBayes default |
+| Parameter | ConfigBinaryClassifier default | ConfigNaiveBayes default |
 |---|---|---|
 | `robS` | `0.3` | `1.0` |
 | `robX` | `0.5` | `0.5` |

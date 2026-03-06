@@ -4,14 +4,14 @@ sidebar_position: 2
 
 # Quick Start: Spam Filter
 
-This guide walks through a minimal working spam filter using the `B8` engine with SQLite storage.
+This guide walks through a minimal working spam filter using the `BinaryClassifier` engine with SQLite storage.
 
 ## 1. Set up storage
 
 ```php
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
-use B8\Storage\Rdbms;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Storage\Rdbms;
 use ByJG\Util\Uri;
 
 $degenerator = new StandardDegenerator(new ConfigDegenerator());
@@ -24,13 +24,13 @@ $storage->createDatabase();
 ## 2. Build the classifier
 
 ```php
-use B8\B8;
-use B8\ConfigB8;
-use B8\Lexer\ConfigLexer;
-use B8\Lexer\StandardLexer;
+use ByJG\TextClassifier\BinaryClassifier;
+use ByJG\TextClassifier\ConfigBinaryClassifier;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Lexer\StandardLexer;
 
-$b8 = new B8(
-    new ConfigB8(),
+$b8 = new BinaryClassifier(
+    new ConfigBinaryClassifier(),
     $storage,
     new StandardLexer(new ConfigLexer())
 );
@@ -40,14 +40,14 @@ $b8 = new B8(
 
 ```php
 // Mark texts as spam
-$b8->learn('Buy cheap pills now! Limited offer!!!', B8::SPAM);
-$b8->learn('You have won a prize. Click here to claim.', B8::SPAM);
-$b8->learn('Earn money fast working from home', B8::SPAM);
+$b8->learn('Buy cheap pills now! Limited offer!!!', BinaryClassifier::SPAM);
+$b8->learn('You have won a prize. Click here to claim.', BinaryClassifier::SPAM);
+$b8->learn('Earn money fast working from home', BinaryClassifier::SPAM);
 
 // Mark texts as ham
-$b8->learn('Meeting rescheduled to Tuesday at 2pm', B8::HAM);
-$b8->learn('Please review the attached pull request', B8::HAM);
-$b8->learn('Your order has been shipped', B8::HAM);
+$b8->learn('Meeting rescheduled to Tuesday at 2pm', BinaryClassifier::HAM);
+$b8->learn('Please review the attached pull request', BinaryClassifier::HAM);
+$b8->learn('Your order has been shipped', BinaryClassifier::HAM);
 ```
 
 ## 4. Classify new text
@@ -71,8 +71,8 @@ If the filter classified something wrong, unlearn it and re-learn with the corre
 
 ```php
 // Previously trained as ham, but it was actually spam
-$b8->unlearn('Your invoice is attached', B8::HAM);
-$b8->learn('Your invoice is attached', B8::SPAM);
+$b8->unlearn('Your invoice is attached', BinaryClassifier::HAM);
+$b8->learn('Your invoice is attached', BinaryClassifier::SPAM);
 ```
 
 ## What happens on first classify

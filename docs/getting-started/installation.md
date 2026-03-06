@@ -15,7 +15,7 @@ sidebar_position: 1
 ## Install via Composer
 
 ```bash
-composer require byjg/b8
+composer require byjg/text-classifier
 ```
 
 ## Storage backend requirements
@@ -24,8 +24,8 @@ b8 supports multiple storage backends. Choose based on your use case:
 
 | Backend | Engine | Extra requirement |
 |---|---|---|
-| `Storage\Rdbms` | B8 (spam filter) | None — uses `byjg/micro-orm` |
-| `Storage\Dba` | B8 (spam filter) | `ext-dba` PHP extension |
+| `Storage\Rdbms` | BinaryClassifier (spam filter) | None — uses `byjg/micro-orm` |
+| `Storage\Dba` | BinaryClassifier (spam filter) | `ext-dba` PHP extension |
 | `NaiveBayes\Storage\Rdbms` | NaiveBayes | None |
 | `NaiveBayes\Storage\Memory` | NaiveBayes | None |
 
@@ -45,13 +45,13 @@ php -m | grep dba
 <?php
 require 'vendor/autoload.php';
 
-use B8\B8;
-use B8\ConfigB8;
-use B8\Lexer\StandardLexer;
-use B8\Lexer\ConfigLexer;
-use B8\Degenerator\StandardDegenerator;
-use B8\Degenerator\ConfigDegenerator;
-use B8\Storage\Rdbms;
+use ByJG\TextClassifier\BinaryClassifier;
+use ByJG\TextClassifier\ConfigBinaryClassifier;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Storage\Rdbms;
 use ByJG\Util\Uri;
 
 $storage = new Rdbms(
@@ -60,7 +60,7 @@ $storage = new Rdbms(
 );
 $storage->createDatabase();
 
-$b8 = new B8(new ConfigB8(), $storage, new StandardLexer(new ConfigLexer()));
+$b8 = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, new StandardLexer(new ConfigLexer()));
 
 echo $b8->classify('hello world'); // prints 0.5 (no training yet)
 ```

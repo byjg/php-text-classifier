@@ -2,7 +2,7 @@
 
 namespace Test\NaiveBayes;
 
-use B8\NaiveBayes\Storage\Memory;
+use ByJG\TextClassifier\NaiveBayes\Storage\Memory;
 
 class NaiveBayesMemoryTest extends NaiveBayesTestCase
 {

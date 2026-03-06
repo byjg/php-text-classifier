@@ -9,7 +9,7 @@ sidebar_position: 3
 ## Setup
 
 ```php
-use B8\NaiveBayes\Storage\Memory;
+use ByJG\TextClassifier\NaiveBayes\Storage\Memory;
 
 $storage = new Memory();
 ```

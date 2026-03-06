@@ -27,10 +27,10 @@
  * @author Tobias Leupold
  */
 
-namespace B8\Storage;
+namespace ByJG\TextClassifier\Storage;
 
-use B8\Degenerator\DegeneratorInterface;
-use B8\Word;
+use ByJG\TextClassifier\Degenerator\DegeneratorInterface;
+use ByJG\TextClassifier\Word;
 use ByJG\AnyDataset\Db\DatabaseExecutor;
 use ByJG\AnyDataset\Db\Factory;
 use ByJG\DbMigration\Database\MySqlDatabase;

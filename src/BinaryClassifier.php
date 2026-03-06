@@ -27,15 +27,15 @@
  * @author Oliver Lillie (original PHP 5 port)
  */
 
-namespace B8;
+namespace ByJG\TextClassifier;
 
-use B8\Degenerator\DegeneratorInterface;
-use B8\Lexer\LexerInterface;
-use B8\Storage\StorageInterface;
+use ByJG\TextClassifier\Degenerator\DegeneratorInterface;
+use ByJG\TextClassifier\Lexer\LexerInterface;
+use ByJG\TextClassifier\Storage\StorageInterface;
 use ByJG\MicroOrm\Mapper;
 use Exception;
 
-class B8
+class BinaryClassifier
 {
 
     const DBVERSION = 3;
@@ -46,9 +46,9 @@ class B8
     protected $mapper;
 
     /**
-     * @var ConfigB8
+     * @var ConfigBinaryClassifier
      */
-    protected ConfigB8 $config;
+    protected ConfigBinaryClassifier $config;
 
     /**
      * @var StorageInterface
@@ -82,7 +82,7 @@ class B8
      * Constructs b8
      *
      * @access public
-     * @param ConfigB8 $config
+     * @param ConfigBinaryClassifier $config
      * @param StorageInterface $storage
      * @param LexerInterface $lexer
      * @throws Exception
@@ -307,7 +307,7 @@ class B8
      *
      * @access public
      * @param string $text
-     * @param string $category Either b8::SPAM or b8::HAM
+     * @param string $category Either BinaryClassifier::SPAM or BinaryClassifier::HAM
      * @return mixed void or an error code
      */
     public function learn($text = null, $category = null)
@@ -328,7 +328,7 @@ class B8
      *
      * @access public
      * @param string $text
-     * @param string $category Either b8::SPAM or b8::HAM
+     * @param string $category Either BinaryClassifier::SPAM or BinaryClassifier::HAM
      * @return mixed void or an error code
      */
     public function unlearn($text = null, $category = null)
@@ -349,8 +349,8 @@ class B8
      *
      * @access private
      * @param string $text
-     * @param string $category Either b8::SPAM or b8::HAM
-     * @param string $action Either b8::LEARN or b8::UNLEARN
+     * @param string $category Either BinaryClassifier::SPAM or BinaryClassifier::HAM
+     * @param string $action Either BinaryClassifier::LEARN or BinaryClassifier::UNLEARN
      * @return mixed void or an error code
      */
     private function _processText($text, $category, $action)

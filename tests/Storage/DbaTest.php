@@ -2,14 +2,9 @@
 
 namespace Test\Storage;
 
-use B8\B8;
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
-use B8\Factory;
-use B8\Storage\Dba;
-use B8\Storage\Rdbms;
-use B8\Storage\StorageInterface;
-use PHPUnit\Framework\TestCase;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Storage\Dba;
 
 class DbaTest extends BaseTestCase
 {

@@ -30,7 +30,7 @@ Duplicates (variants identical to the original token) are excluded.
 B8 tries all degenerated variants against the storage. If one or more are found, the one with probability furthest from `0.5` is used. This selects the most "informative" variant:
 
 ```php
-// Pseudocode of selection logic in B8::_getProbability()
+// Pseudocode of selection logic in BinaryClassifier::_getProbability()
 $rating = 0.5; // default
 foreach ($degenerates as $variant => $count) {
     $candidate = calcProbability($count, $ham_texts, $spam_texts);
@@ -45,8 +45,8 @@ foreach ($degenerates as $variant => $count) {
 By default, `StandardDegenerator` uses `strtolower()` / `strtoupper()` which only handles ASCII. For non-ASCII text (accented characters, Cyrillic, CJK), enable multibyte mode:
 
 ```php
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
 
 $degenerator = new StandardDegenerator(
     (new ConfigDegenerator())
@@ -63,7 +63,7 @@ With multibyte enabled, `mb_strtolower()`, `mb_strtoupper()`, and `mb_substr()` 
 
 ## NaiveBayes does not use degeneration
 
-The `NaiveBayes` engine does not accept a degenerator. Unknown tokens in NaiveBayes are simply skipped — they contribute no signal to the classification score. If degeneration-like fallback behaviour is important for your use case, use the B8 engine instead.
+The `NaiveBayes` engine does not accept a degenerator. Unknown tokens in NaiveBayes are simply skipped — they contribute no signal to the classification score. If degeneration-like fallback behaviour is important for your use case, use the BinaryClassifier engine instead.
 
 ## ConfigDegenerator reference
 

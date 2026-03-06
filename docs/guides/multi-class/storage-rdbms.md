@@ -11,7 +11,7 @@ sidebar_position: 4
 ### SQLite
 
 ```php
-use B8\NaiveBayes\Storage\Rdbms;
+use ByJG\TextClassifier\NaiveBayes\Storage\Rdbms;
 use ByJG\Util\Uri;
 
 $storage = new Rdbms(new Uri('sqlite:///var/data/classifier.db'));
@@ -37,9 +37,9 @@ $storage->createDatabase();
 ## Use with NaiveBayes
 
 ```php
-use B8\Lexer\ConfigLexer;
-use B8\Lexer\StandardLexer;
-use B8\NaiveBayes\NaiveBayes;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\NaiveBayes\NaiveBayes;
 
 $nb = new NaiveBayes($storage, new StandardLexer(new ConfigLexer()));
 
@@ -66,7 +66,7 @@ CREATE TABLE nb_wordlist (
 );
 ```
 
-**Note:** `createDatabase()` also creates the `b8_wordlist` table (migration `00001`) because the migration runs all scripts in order. This is harmless — the B8 spam filter tables are simply unused by `NaiveBayes`.
+**Note:** `createDatabase()` also creates the `b8_wordlist` table (migration `00001`) because the migration runs all scripts in order. This is harmless — the BinaryClassifier spam filter tables are simply unused by `NaiveBayes`.
 
 ## Sharing a database with B8
 
@@ -79,7 +79,7 @@ $uri = new Uri('sqlite:///var/data/shared.db');
 $storage = new \B8\NaiveBayes\Storage\Rdbms($uri);
 $storage->createDatabase();
 
-$spamStorage = new \B8\Storage\Rdbms($uri, $degenerator);
+$spamStorage = new \ByJG\TextClassifier\Storage\Rdbms($uri, $degenerator);
 // No createDatabase() needed — already applied above
 ```
 

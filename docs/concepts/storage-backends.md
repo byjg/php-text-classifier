@@ -4,9 +4,9 @@ sidebar_position: 5
 
 # Storage Backends
 
-Both the B8 spam filter and NaiveBayes classifier use pluggable storage backends. This page compares all available options.
+Both the BinaryClassifier spam filter and NaiveBayes classifier use pluggable storage backends. This page compares all available options.
 
-## B8 (spam filter) backends
+## BinaryClassifier (spam filter) backends
 
 | Backend | Class | Persistence | External dependency |
 |---|---|---|---|
@@ -60,7 +60,7 @@ Both the B8 spam filter and NaiveBayes classifier use pluggable storage backends
 
 ### For B8
 
-Implement `B8\Storage\StorageInterface`. The key methods are:
+Implement `ByJG\TextClassifier\Storage\StorageInterface`. The key methods are:
 
 ```php
 public function storageOpen(): void;

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace B8\Storage;
+namespace ByJG\TextClassifier\Storage;
 
 
-use B8\Word;
+use ByJG\TextClassifier\Word;
 
 interface StorageInterface
 {

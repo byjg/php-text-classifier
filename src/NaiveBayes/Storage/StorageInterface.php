@@ -1,6 +1,6 @@
 <?php
 
-namespace B8\NaiveBayes\Storage;
+namespace ByJG\TextClassifier\NaiveBayes\Storage;
 
 interface StorageInterface
 {

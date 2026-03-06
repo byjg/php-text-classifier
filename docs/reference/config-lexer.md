@@ -21,7 +21,7 @@ sidebar_position: 4
 ## Usage
 
 ```php
-use B8\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
 
 $config = (new ConfigLexer())
     ->setMinSize(3)

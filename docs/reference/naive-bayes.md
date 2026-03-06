@@ -19,7 +19,7 @@ new NaiveBayes(
 | Parameter | Type | Description |
 |---|---|---|
 | `$storage` | `B8\NaiveBayes\Storage\StorageInterface` | Persistence backend |
-| `$lexer` | `B8\Lexer\LexerInterface` | Tokeniser |
+| `$lexer` | `ByJG\TextClassifier\Lexer\LexerInterface` | Tokeniser |
 | `$config` | `ConfigNaiveBayes` | Smoothing parameters (optional) |
 
 `$config` uses PHP 8.1+ constructor promotion default — if omitted, a default `ConfigNaiveBayes` is created automatically.
@@ -71,10 +71,10 @@ $topScore    = $scores[$topCategory];     // 0.91
 ## Usage example
 
 ```php
-use B8\Lexer\ConfigLexer;
-use B8\Lexer\StandardLexer;
-use B8\NaiveBayes\NaiveBayes;
-use B8\NaiveBayes\Storage\Memory;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\NaiveBayes\NaiveBayes;
+use ByJG\TextClassifier\NaiveBayes\Storage\Memory;
 
 $nb = new NaiveBayes(
     new Memory(),

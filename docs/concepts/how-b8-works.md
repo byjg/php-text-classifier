@@ -110,4 +110,4 @@ When `unlearn($text, $category)` is called, the same steps are reversed.
 | `use_relevant` | Maximum tokens considered per classification |
 | `min_dev` | Minimum deviation from `0.5` for a token to be considered |
 
-See [ConfigB8 reference](../reference/config-b8.md).
+See [ConfigBinaryClassifier reference](../reference/config-b8.md).

@@ -11,9 +11,9 @@ sidebar_position: 3
 ### SQLite
 
 ```php
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
-use B8\Storage\Rdbms;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Storage\Rdbms;
 use ByJG\Util\Uri;
 
 $storage = new Rdbms(

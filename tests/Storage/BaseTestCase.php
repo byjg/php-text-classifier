@@ -2,10 +2,10 @@
 
 namespace Test\Storage;
 
-use B8\B8;
-use B8\Storage\Base;
-use B8\Storage\StorageInterface;
-use B8\Word;
+use ByJG\TextClassifier\BinaryClassifier;
+use ByJG\TextClassifier\Storage\Base;
+use ByJG\TextClassifier\Storage\StorageInterface;
+use ByJG\TextClassifier\Word;
 use PHPUnit\Framework\TestCase;
 
 abstract class BaseTestCase extends TestCase
@@ -40,8 +40,8 @@ abstract class BaseTestCase extends TestCase
                 "good" => 1,
                 "text" => 1
             ],
-            B8::HAM,
-            B8::LEARN
+            BinaryClassifier::HAM,
+            BinaryClassifier::LEARN
         );
 
         // Check words
@@ -67,8 +67,8 @@ abstract class BaseTestCase extends TestCase
                 "bad" => 1,
                 "text" => 1
             ],
-            B8::SPAM,
-            B8::LEARN
+            BinaryClassifier::SPAM,
+            BinaryClassifier::LEARN
         );
 
         // Check words
@@ -93,8 +93,8 @@ abstract class BaseTestCase extends TestCase
                 "another" => 1,
                 "text" => 1
             ],
-            B8::SPAM,
-            B8::UNLEARN
+            BinaryClassifier::SPAM,
+            BinaryClassifier::UNLEARN
         );
 
         // Check words
@@ -120,8 +120,8 @@ abstract class BaseTestCase extends TestCase
                 "another" => 1,
                 "good" => 1,
             ],
-            B8::HAM,
-            B8::LEARN
+            BinaryClassifier::HAM,
+            BinaryClassifier::LEARN
         );
 
         // Check words

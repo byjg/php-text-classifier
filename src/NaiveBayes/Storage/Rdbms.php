@@ -1,6 +1,6 @@
 <?php
 
-namespace B8\NaiveBayes\Storage;
+namespace ByJG\TextClassifier\NaiveBayes\Storage;
 
 use ByJG\AnyDataset\Db\DatabaseExecutor;
 use ByJG\AnyDataset\Db\Factory;

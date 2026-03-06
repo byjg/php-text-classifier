@@ -9,15 +9,15 @@ Training teaches b8 which texts are spam and which are ham. The filter learns by
 ## Basic training
 
 ```php
-$b8->learn($text, B8::SPAM);  // mark as spam
-$b8->learn($text, B8::HAM);   // mark as ham
+$b8->learn($text, BinaryClassifier::SPAM);  // mark as spam
+$b8->learn($text, BinaryClassifier::HAM);   // mark as ham
 ```
 
 Both constants are defined on the `B8` class:
 
 ```php
-B8::SPAM  // = 'spam'
-B8::HAM   // = 'ham'
+BinaryClassifier::SPAM  // = 'spam'
+BinaryClassifier::HAM   // = 'ham'
 ```
 
 ## Unlearning
@@ -25,8 +25,8 @@ B8::HAM   // = 'ham'
 Remove a previously trained text from the model:
 
 ```php
-$b8->unlearn($text, B8::SPAM);
-$b8->unlearn($text, B8::HAM);
+$b8->unlearn($text, BinaryClassifier::SPAM);
+$b8->unlearn($text, BinaryClassifier::HAM);
 ```
 
 Use this to correct mistakes or to remove old training data that no longer reflects current patterns.
@@ -37,8 +37,8 @@ The recommended correction workflow:
 
 ```php
 // Text was learned as ham but should have been spam
-$b8->unlearn($text, B8::HAM);
-$b8->learn($text, B8::SPAM);
+$b8->unlearn($text, BinaryClassifier::HAM);
+$b8->learn($text, BinaryClassifier::SPAM);
 ```
 
 Always unlearn before re-learning with a different label. Skipping the unlearn step adds weight to both categories, which degrades accuracy.
@@ -50,7 +50,7 @@ There is no bulk training API — call `learn()` in a loop:
 ```php
 $spamTexts = ['...', '...', '...'];
 foreach ($spamTexts as $text) {
-    $b8->learn($text, B8::SPAM);
+    $b8->learn($text, BinaryClassifier::SPAM);
 }
 ```
 
@@ -73,8 +73,8 @@ Training is persisted immediately to the storage backend. There is no separate "
 
 | Constant | Meaning |
 |---|---|
-| `B8::TRAINER_TEXT_MISSING` | `$text` was `null` |
-| `B8::TRAINER_CATEGORY_MISSING` | `$category` was `null` |
-| `B8::TRAINER_CATEGORY_FAIL` | `$category` was not `B8::SPAM` or `B8::HAM` |
+| `BinaryClassifier::TRAINER_TEXT_MISSING` | `$text` was `null` |
+| `BinaryClassifier::TRAINER_CATEGORY_MISSING` | `$category` was `null` |
+| `BinaryClassifier::TRAINER_CATEGORY_FAIL` | `$category` was not `BinaryClassifier::SPAM` or `BinaryClassifier::HAM` |
 
 See [Error Codes reference](../../reference/error-codes.md) for the full list.

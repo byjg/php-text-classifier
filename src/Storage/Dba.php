@@ -27,10 +27,10 @@
  * @author Tobias Leupold
  */
 
-namespace B8\Storage;
+namespace ByJG\TextClassifier\Storage;
 
-use B8\Degenerator\DegeneratorInterface;
-use B8\Word;
+use ByJG\TextClassifier\Degenerator\DegeneratorInterface;
+use ByJG\TextClassifier\Word;
 
 class Dba extends Base
 {

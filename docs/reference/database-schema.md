@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # Database Schema
 
-Both the B8 spam filter and NaiveBayes RDBMS backends use the same database, managed by `byjg/migration`. Migrations are located in `db/migrations/`.
+Both the BinaryClassifier spam filter and NaiveBayes RDBMS backends use the same database, managed by `byjg/migration`. Migrations are located in `db/migrations/`.
 
 ## Migration files
 
@@ -17,7 +17,7 @@ Both the B8 spam filter and NaiveBayes RDBMS backends use the same database, man
 
 ## Tables
 
-### `b8_wordlist` — B8 spam filter tokens
+### `b8_wordlist` — BinaryClassifier spam filter tokens
 
 ```sql
 CREATE TABLE b8_wordlist (
@@ -80,8 +80,8 @@ CREATE TABLE nb_wordlist (
 Migrations are applied automatically by `createDatabase()`:
 
 ```php
-// B8 spam filter
-$storage = new \B8\Storage\Rdbms($uri, $degenerator);
+// BinaryClassifier spam filter
+$storage = new \ByJG\TextClassifier\Storage\Rdbms($uri, $degenerator);
 $storage->createDatabase();
 
 // NaiveBayes

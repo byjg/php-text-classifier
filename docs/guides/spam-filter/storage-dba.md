@@ -21,9 +21,9 @@ php -r "print_r(dba_handlers(true));"
 ## Setup
 
 ```php
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
-use B8\Storage\Dba;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Storage\Dba;
 
 $storage = new Dba(
     '/var/data/wordlist.db',

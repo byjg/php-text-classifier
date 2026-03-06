@@ -1,11 +1,11 @@
 # b8 — Bayesian Text Classifier
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
-[![Build Status](https://github.com/byjg/b8/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/b8/actions/workflows/phpunit.yml)
+[![Build Status](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
-[![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/b8/)
-[![GitHub license](https://img.shields.io/github/license/byjg/b8.svg)](https://opensource.byjg.com/opensource/licensing.html)
-[![GitHub release](https://img.shields.io/github/release/byjg/b8.svg)](https://github.com/byjg/b8/releases/)
+[![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/text-classifier/)
+[![GitHub license](https://img.shields.io/github/license/byjg/text-classifier.svg)](https://opensource.byjg.com/opensource/licensing.html)
+[![GitHub release](https://img.shields.io/github/release/byjg/text-classifier.svg)](https://github.com/byjg/text-classifier/releases/)
 
 A PHP library for statistical text classification. Provides two independent engines:
 
@@ -17,7 +17,7 @@ Both engines share the same tokenization pipeline (`StandardLexer`, `StandardDeg
 ## Installation
 
 ```bash
-composer require byjg/b8
+composer require byjg/text-classifier
 ```
 
 Requires PHP `>=8.3`. The BerkeleyDB storage backend additionally requires `ext-dba`.
@@ -27,22 +27,22 @@ Requires PHP `>=8.3`. The BerkeleyDB storage backend additionally requires `ext-
 **Spam filter:**
 
 ```php
-use B8\B8;
-use B8\ConfigB8;
-use B8\Lexer\StandardLexer;
-use B8\Lexer\ConfigLexer;
-use B8\Degenerator\StandardDegenerator;
-use B8\Degenerator\ConfigDegenerator;
-use B8\Storage\Rdbms;
+use ByJG\TextClassifier\BinaryClassifier;
+use ByJG\TextClassifier\ConfigBinaryClassifier;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Storage\Rdbms;
 use ByJG\Util\Uri;
 
 $storage = new Rdbms(new Uri('sqlite:///tmp/spam.db'), new StandardDegenerator(new ConfigDegenerator()));
 $storage->createDatabase();
 
-$b8 = new B8(new ConfigB8(), $storage, new StandardLexer(new ConfigLexer()));
+$b8 = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, new StandardLexer(new ConfigLexer()));
 
-$b8->learn('Buy cheap pills now!!!', B8::SPAM);
-$b8->learn('Meeting at 3pm in the conference room', B8::HAM);
+$b8->learn('Buy cheap pills now!!!', BinaryClassifier::SPAM);
+$b8->learn('Meeting at 3pm in the conference room', BinaryClassifier::HAM);
 
 $score = $b8->classify('buy pills online cheap');
 // $score is close to 1.0 (spam)
@@ -51,10 +51,10 @@ $score = $b8->classify('buy pills online cheap');
 **Multi-class classifier:**
 
 ```php
-use B8\NaiveBayes\NaiveBayes;
-use B8\NaiveBayes\Storage\Memory;
-use B8\Lexer\StandardLexer;
-use B8\Lexer\ConfigLexer;
+use ByJG\TextClassifier\NaiveBayes\NaiveBayes;
+use ByJG\TextClassifier\NaiveBayes\Storage\Memory;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
 
 $nb = new NaiveBayes(new Memory(), new StandardLexer(new ConfigLexer()));
 
@@ -83,6 +83,6 @@ This library is inspired by the original **b8** spam filter written by [Tobias L
 
 ```mermaid
 flowchart TD
-    byjg/b8 --> byjg/micro-orm
-    byjg/b8 --> byjg/migration
+    byjg/text-classifier --> byjg/micro-orm
+    byjg/text-classifier --> byjg/migration
 ```

@@ -2,10 +2,10 @@
 
 namespace Test\NaiveBayes;
 
-use B8\Lexer\ConfigLexer;
-use B8\Lexer\StandardLexer;
-use B8\NaiveBayes\NaiveBayes;
-use B8\NaiveBayes\Storage\StorageInterface;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\NaiveBayes\NaiveBayes;
+use ByJG\TextClassifier\NaiveBayes\Storage\StorageInterface;
 use PHPUnit\Framework\TestCase;
 
 abstract class NaiveBayesTestCase extends TestCase

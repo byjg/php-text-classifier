@@ -9,10 +9,10 @@ This example shows how to use the `NaiveBayes` classifier for automatic language
 ## Setup
 
 ```php
-use B8\Lexer\ConfigLexer;
-use B8\Lexer\StandardLexer;
-use B8\NaiveBayes\NaiveBayes;
-use B8\NaiveBayes\Storage\Memory;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\NaiveBayes\NaiveBayes;
+use ByJG\TextClassifier\NaiveBayes\Storage\Memory;
 
 $storage = new Memory();
 $nb = new NaiveBayes(

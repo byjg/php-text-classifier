@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-# ConfigB8
+# ConfigBinaryClassifier
 
-`B8\ConfigB8` controls the classification algorithm of the B8 spam filter. All setters return `$this` for fluent chaining.
+`ByJG\TextClassifier\ConfigBinaryClassifier` controls the classification algorithm of the BinaryClassifier spam filter. All setters return `$this` for fluent chaining.
 
 ## Parameters
 
@@ -18,9 +18,9 @@ sidebar_position: 3
 ## Usage
 
 ```php
-use B8\ConfigB8;
+use ByJG\TextClassifier\ConfigBinaryClassifier;
 
-$config = (new ConfigB8())
+$config = (new ConfigBinaryClassifier())
     ->setUseRelevant(20)
     ->setMinDev(0.1)
     ->setRobS(0.3)

@@ -2,13 +2,13 @@
 
 namespace Test;
 
-use B8\B8;
+use ByJG\TextClassifier\BinaryClassifier;
 use PHPUnit\Framework\TestCase;
 
 abstract class B8TestCase extends TestCase
 {
     /**
-     * @var B8
+     * @var BinaryClassifier
      */
     protected $b8 = null;
 
@@ -27,14 +27,14 @@ abstract class B8TestCase extends TestCase
         $result = $this->b8->classify("this is a bad text");
         $this->assertEquals($expected, $result);
 
-        $this->b8->learn("this is a bad text", B8::SPAM);
+        $this->b8->learn("this is a bad text", BinaryClassifier::SPAM);
 
         $expected = 0.88461538;
         $result = $this->b8->classify("talking bad");
         $this->assertGreaterThanOrEqual($expected, $result);
         $this->assertLessThanOrEqual($expected + 0.01, $result);
 
-        $this->b8->learn("john is a good person", B8::HAM);
+        $this->b8->learn("john is a good person", BinaryClassifier::HAM);
 
         $expected = 0.11538461;
         $result = $this->b8->classify("talking about john");

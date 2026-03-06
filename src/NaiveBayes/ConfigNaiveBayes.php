@@ -1,6 +1,6 @@
 <?php
 
-namespace B8\NaiveBayes;
+namespace ByJG\TextClassifier\NaiveBayes;
 
 class ConfigNaiveBayes
 {

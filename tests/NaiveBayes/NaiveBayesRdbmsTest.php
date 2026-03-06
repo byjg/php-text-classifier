@@ -2,7 +2,7 @@
 
 namespace Test\NaiveBayes;
 
-use B8\NaiveBayes\Storage\Rdbms;
+use ByJG\TextClassifier\NaiveBayes\Storage\Rdbms;
 use ByJG\Util\Uri;
 
 class NaiveBayesRdbmsTest extends NaiveBayesTestCase

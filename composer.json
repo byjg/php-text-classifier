@@ -1,5 +1,5 @@
 {
-  "name": "byjg/b8",
+  "name": "byjg/text-classifier",
   "type": "library",
   "description": "A statistical (Bayesian) spam filter written in PHP",
   "keywords": ["spam", "filter"],
@@ -9,7 +9,11 @@
   "require": {
     "byjg/micro-orm": "^6.0",
     "byjg/migration": "^6.0",
-    "php": ">=8.3 <8.6"
+    "byjg/llm-api-objects": "^6.0",
+    "openai-php/client": "^0.19",
+    "php": ">=8.3 <8.6",
+    "symfony/http-client": "^8.0",
+    "nyholm/psr7": "^1.8"
   },
   "suggest": {
     "ext-mbstring": "*",
@@ -22,12 +26,17 @@
   },
   "autoload": {
     "psr-4": {
-      "B8\\": "src/"
+      "ByJG\\TextClassifier\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
       "Test\\": "tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
     }
   },
   "scripts": {

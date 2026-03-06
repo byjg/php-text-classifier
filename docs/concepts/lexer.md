@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Lexer
 
-The lexer is responsible for tokenising input text into a map of `token => count` pairs. Both the B8 spam filter and the NaiveBayes classifier use the same lexer pipeline.
+The lexer is responsible for tokenising input text into a map of `token => count` pairs. Both the BinaryClassifier spam filter and the NaiveBayes classifier use the same lexer pipeline.
 
 ## StandardLexer pipeline
 
@@ -80,4 +80,4 @@ See [ConfigLexer reference](../reference/config-lexer.md).
 | `StandardLexer::LEXER_TEXT_NOT_STRING` | Input is not a string |
 | `StandardLexer::LEXER_TEXT_EMPTY` | Input is an empty string |
 
-Both `B8::classify()` and `B8::learn()` propagate these codes as their own return value.
+Both `BinaryClassifier::classify()` and `BinaryClassifier::learn()` propagate these codes as their own return value.

@@ -1,9 +1,9 @@
 <?php
 
-namespace B8\NaiveBayes;
+namespace ByJG\TextClassifier\NaiveBayes;
 
-use B8\Lexer\LexerInterface;
-use B8\NaiveBayes\Storage\StorageInterface;
+use ByJG\TextClassifier\Lexer\LexerInterface;
+use ByJG\TextClassifier\NaiveBayes\Storage\StorageInterface;
 
 class NaiveBayes
 {
@@ -43,6 +43,14 @@ class NaiveBayes
         foreach ($tokens as $token => $count) {
             $this->storage->decrementToken((string)$token, $category, $count);
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCategories(): array
+    {
+        return $this->storage->getCategories();
     }
 
     /**

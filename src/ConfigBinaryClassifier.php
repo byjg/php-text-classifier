@@ -1,8 +1,8 @@
 <?php
 
-namespace B8;
+namespace ByJG\TextClassifier;
 
-class ConfigB8
+class ConfigBinaryClassifier
 {
     private $use_relevant = 15;
     private $min_dev = 0.2;
@@ -19,7 +19,7 @@ class ConfigB8
 
     /**
      * @param int $use_relevant
-     * @return ConfigB8
+     * @return ConfigBinaryClassifier
      */
     public function setUseRelevant($use_relevant)
     {
@@ -37,7 +37,7 @@ class ConfigB8
 
     /**
      * @param float $min_dev
-     * @return ConfigB8
+     * @return ConfigBinaryClassifier
      */
     public function setMinDev($min_dev)
     {
@@ -55,7 +55,7 @@ class ConfigB8
 
     /**
      * @param float $rob_s
-     * @return ConfigB8
+     * @return ConfigBinaryClassifier
      */
     public function setRobS($rob_s)
     {
@@ -73,7 +73,7 @@ class ConfigB8
 
     /**
      * @param float $rob_x
-     * @return ConfigB8
+     * @return ConfigBinaryClassifier
      */
     public function setRobX($rob_x)
     {

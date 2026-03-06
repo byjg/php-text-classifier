@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # ConfigDegenerator
 
-`B8\Degenerator\ConfigDegenerator` controls the word degeneration behaviour used by the B8 spam filter. All setters return `$this` for fluent chaining.
+`ByJG\TextClassifier\Degenerator\ConfigDegenerator` controls the word degeneration behaviour used by the BinaryClassifier spam filter. All setters return `$this` for fluent chaining.
 
 ## Parameters
 
@@ -18,8 +18,8 @@ sidebar_position: 5
 ### ASCII text (default)
 
 ```php
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
 
 $degenerator = new StandardDegenerator(new ConfigDegenerator());
 ```
