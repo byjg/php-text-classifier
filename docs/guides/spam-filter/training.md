@@ -1,0 +1,80 @@
+---
+sidebar_position: 1
+---
+
+# Training the Spam Filter
+
+Training teaches the classifier which texts are spam and which are ham. The filter learns by counting how often tokens appear in each category, weighted by the total number of trained texts per category.
+
+## Basic training
+
+```php
+$classifier->learn($text, BinaryClassifier::SPAM);  // mark as spam
+$classifier->learn($text, BinaryClassifier::HAM);   // mark as ham
+```
+
+Both constants are defined on `BinaryClassifier`:
+
+```php
+BinaryClassifier::SPAM  // = 'spam'
+BinaryClassifier::HAM   // = 'ham'
+```
+
+## Unlearning
+
+Remove a previously trained text from the model:
+
+```php
+$classifier->unlearn($text, BinaryClassifier::SPAM);
+$classifier->unlearn($text, BinaryClassifier::HAM);
+```
+
+Use this to correct mistakes or to remove old training data that no longer reflects current patterns.
+
+## Correcting a misclassification
+
+The recommended correction workflow:
+
+```php
+// Text was learned as ham but should have been spam
+$classifier->unlearn($text, BinaryClassifier::HAM);
+$classifier->learn($text, BinaryClassifier::SPAM);
+```
+
+Always unlearn before re-learning with a different label. Skipping the unlearn step adds weight to both categories, which degrades accuracy.
+
+## Batch training
+
+There is no bulk training API — call `learn()` in a loop:
+
+```php
+$spamTexts = ['...', '...', '...'];
+foreach ($spamTexts as $text) {
+    $classifier->learn($text, BinaryClassifier::SPAM);
+}
+```
+
+## Training data quality
+
+| Principle | Guidance |
+|---|---|
+| Balance | Aim for a similar number of spam and ham samples |
+| Diversity | Varied text produces better generalisation than repetitive phrases |
+| Relevance | Train on texts representative of what you expect to classify |
+| Maintenance | Periodically untrain outdated samples to keep the model current |
+
+## Training persistence
+
+Training is persisted immediately to the storage backend. There is no separate "flush" or "commit" step. Rdbms storage writes to the database on every `learn()` call. DBA storage opens, writes, and closes the file per operation.
+
+## Error codes
+
+`learn()` and `unlearn()` return `null` on success or one of:
+
+| Constant | Meaning |
+|---|---|
+| `BinaryClassifier::TRAINER_TEXT_MISSING` | `$text` was `null` |
+| `BinaryClassifier::TRAINER_CATEGORY_MISSING` | `$category` was `null` |
+| `BinaryClassifier::TRAINER_CATEGORY_FAIL` | `$category` was not `BinaryClassifier::SPAM` or `BinaryClassifier::HAM` |
+
+See [Error Codes reference](../../reference/error-codes.md) for the full list.

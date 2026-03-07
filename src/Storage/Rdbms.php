@@ -27,11 +27,16 @@
  * @author Tobias Leupold
  */
 
-namespace B8\Storage;
+namespace ByJG\TextClassifier\Storage;
 
-use B8\Degenerator\DegeneratorInterface;
-use B8\Word;
+use ByJG\TextClassifier\Degenerator\DegeneratorInterface;
+use ByJG\TextClassifier\Word;
+use ByJG\AnyDataset\Db\DatabaseExecutor;
 use ByJG\AnyDataset\Db\Factory;
+use ByJG\DbMigration\Database\MySqlDatabase;
+use ByJG\DbMigration\Database\PgsqlDatabase;
+use ByJG\DbMigration\Database\SqliteDatabase;
+use ByJG\DbMigration\Migration;
 use ByJG\MicroOrm\Exception\InvalidArgumentException;
 use ByJG\MicroOrm\Exception\OrmBeforeInvalidException;
 use ByJG\MicroOrm\Exception\OrmInvalidFieldsException;
@@ -42,6 +47,8 @@ use ByJG\Util\Uri;
 
 class Rdbms extends Base
 {
+    protected Uri $uri;
+
     /**
      * @var Mapper
      */
@@ -60,36 +67,65 @@ class Rdbms extends Base
      */
     public function __construct($uri, $degenerator)
     {
+        $this->uri = $uri instanceof Uri ? $uri : new Uri((string)$uri);
+
         $this->mapper = new Mapper(
             Word::class,
-            'b8_wordlist',
+            'tc_wordlist',
             'token'
         );
 
-        $dataset = Factory::getDbRelationalInstance($uri);
+        $dataset = Factory::getDbRelationalInstance((string)$this->uri);
 
-        $this->repository = new Repository($dataset, $this->mapper);
+        $this->repository = new Repository(new DatabaseExecutor($dataset), $this->mapper);
 
         $this->degenerator = $degenerator;
     }
 
+    /**
+     * Creates the required database tables using migrations.
+     * Call this once to set up a new database.
+     */
+    public function createDatabase(): void
+    {
+        Migration::registerDatabase(SqliteDatabase::class);
+        Migration::registerDatabase(MySqlDatabase::class);
+        Migration::registerDatabase(PgsqlDatabase::class);
+
+        $migration = new Migration($this->uri, __DIR__ . '/../../db');
+        $migration->reset();
+
+        // Reinitialize connection after migration reset
+        $dataset = Factory::getDbRelationalInstance((string)$this->uri);
+        $this->repository = new Repository(new DatabaseExecutor($dataset), $this->mapper);
+    }
+
+    #[\Override]
+    /**
+     * @return void
+     */
     public function storageOpen()
     {
         // Do nothing;
     }
 
+    #[\Override]
+    /**
+     * @return void
+     */
     public function storageClose()
     {
         // Do nothing;
     }
 
     /**
-     * @param array $tokens
+     * @param array|string $tokens
      * @return Word[]
      * @throws InvalidArgumentException
      * @throws \ByJG\Serializer\Exception\InvalidArgumentException
      */
-    public function storageRetrieve($tokens)
+    #[\Override]
+    public function storageRetrieve(array|string $tokens)
     {
         $collection = $this->repository->filterIn($tokens);
 
@@ -111,6 +147,7 @@ class Rdbms extends Base
      * @throws OrmInvalidFieldsException
      * @throws \ByJG\Serializer\Exception\InvalidArgumentException
      */
+    #[\Override]
     public function storagePut($word)
     {
         $this->repository->save($word);
@@ -127,6 +164,7 @@ class Rdbms extends Base
      * @throws OrmInvalidFieldsException
      * @throws \ByJG\Serializer\Exception\InvalidArgumentException
      */
+    #[\Override]
     public function storageUpdate($word)
     {
         $this->repository->save($word);
@@ -140,6 +178,7 @@ class Rdbms extends Base
      * @return void
      * @throws InvalidArgumentException
      */
+    #[\Override]
     public function storageDel($token)
     {
         $this->repository->delete($token);

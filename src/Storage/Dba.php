@@ -27,10 +27,10 @@
  * @author Tobias Leupold
  */
 
-namespace B8\Storage;
+namespace ByJG\TextClassifier\Storage;
 
-use B8\Degenerator\DegeneratorInterface;
-use B8\Word;
+use ByJG\TextClassifier\Degenerator\DegeneratorInterface;
+use ByJG\TextClassifier\Word;
 
 class Dba extends Base
 {
@@ -49,11 +49,31 @@ class Dba extends Base
         $this->degenerator = $degenerator;
     }
 
-    public function storageOpen()
+    /**
+     * Creates a new GDBM database file and seeds the required internal variables.
+     * Call this once to set up a new database.
+     */
+    public function createDatabase(): void
     {
-        $this->db = dba_open($this->path, 'w', 'db4');
+        $db = dba_open($this->path, 'c', 'gdbm');
+        dba_insert('tc*dbversion', '3', $db);
+        dba_insert('tc*texts', '0 0', $db);
+        dba_close($db);
     }
 
+    #[\Override]
+    /**
+     * @return void
+     */
+    public function storageOpen()
+    {
+        $this->db = dba_open($this->path, 'w', 'gdbm');
+    }
+
+    #[\Override]
+    /**
+     * @return void
+     */
     public function storageClose()
     {
         dba_close($this->db);
@@ -61,14 +81,15 @@ class Dba extends Base
     }
 
     /**
-     * @param array $tokens
+     * @param array|string $tokens
      * @return Word[]
      */
-    public function storageRetrieve($tokens)
+    #[\Override]
+    public function storageRetrieve(array|string $tokens)
     {
         $data = [];
 
-        foreach ((array)$tokens as $token) {
+        foreach (is_array($tokens) ? $tokens : [$tokens] as $token) {
             // Try to the raw data in the format "count_ham count_spam"
             $count = dba_fetch($token, $this->db);
 
@@ -92,10 +113,11 @@ class Dba extends Base
      * Store a token to the database.
      *
      * @access protected
+     *
      * @param Word $word
-     * @return void
      */
-    public function storagePut($word)
+    #[\Override]
+    public function storagePut($word): bool
     {
         return dba_insert($word->token, $word->count_ham . " " . $word->count_spam, $this->db);
     }
@@ -104,10 +126,11 @@ class Dba extends Base
      * Update an existing token.
      *
      * @access protected
+     *
      * @param Word $word
-     * @return void
      */
-    public function storageUpdate($word)
+    #[\Override]
+    public function storageUpdate($word): bool
     {
         return dba_replace($word->token, $word->count_ham . " " . $word->count_spam, $this->db);
     }
@@ -116,10 +139,11 @@ class Dba extends Base
      * Remove a token from the database.
      *
      * @access protected
+     *
      * @param string $token
-     * @return void
      */
-    public function storageDel($token)
+    #[\Override]
+    public function storageDel($token): bool
     {
         return dba_delete($token, $this->db);
     }

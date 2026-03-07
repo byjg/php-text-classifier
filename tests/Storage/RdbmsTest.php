@@ -2,21 +2,16 @@
 
 namespace Test\Storage;
 
-use B8\B8;
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
-use B8\Factory;
-use B8\Storage\Rdbms;
-use B8\Storage\StorageInterface;
-use PHPUnit\Framework\TestCase;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Storage\Rdbms;
 
-class RdbmsTest extends BaseTest
+class RdbmsTest extends BaseTestCase
 {
     protected function setUp(): void
     {
         $this->path = "/tmp/sqlite.db";
         $this->tearDown();
-        copy(__DIR__ . "/../db/sqlite.db", $this->path);
 
         $degenerator = new StandardDegenerator(
             (new ConfigDegenerator())
@@ -28,5 +23,6 @@ class RdbmsTest extends BaseTest
             $uri,
             $degenerator
         );
+        $this->storage->createDatabase();
     }
 }

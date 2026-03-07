@@ -27,42 +27,43 @@
  * @author Tobias Leupold
  */
 
-namespace B8\Storage;
+namespace ByJG\TextClassifier\Storage;
 
-use B8\B8;
-use B8\Degenerator\DegeneratorInterface;
-use B8\Word;
+use ByJG\TextClassifier\BinaryClassifier;
+use ByJG\TextClassifier\Degenerator\DegeneratorInterface;
+use ByJG\TextClassifier\Word;
 use Exception;
 
 abstract class Base implements StorageInterface
 {
 
     /**
-     * @var DegeneratorInterface
+     * @var DegeneratorInterface|null
      */
-    protected $degenerator = null;
+    protected ?DegeneratorInterface $degenerator = null;
 
-    const INTERNALS_TEXTS     = 'b8*texts';
-    const INTERNALS_DBVERSION = 'b8*dbversion';
+    const INTERNALS_TEXTS     = 'tc*texts';
+    const INTERNALS_DBVERSION = 'tc*dbversion';
 
     /**
-     * Checks if a b8 database is used and if it's version is okay.
+     * Checks if the database version is compatible.
      *
      * @return void throws an exception if something's wrong with the database
      * @throws Exception
      */
+    #[\Override]
     public function checkVersion()
     {
         $this->storageOpen();
         $internals = $this->storageRetrieve(self::INTERNALS_DBVERSION);
         $this->storageClose();
 
-        if ($internals[B8::DBVERSION]->count_ham == B8::DBVERSION) {
+        if ($internals[BinaryClassifier::DBVERSION]->count_ham == BinaryClassifier::DBVERSION) {
             return;
         }
 
         throw new Exception(
-            'b8_storage_base: The connected database is not a b8 v' . b8::DBVERSION . ' database.'
+            'The connected database is not a TextClassifier v' . BinaryClassifier::DBVERSION . ' database.'
         );
     }
 
@@ -72,6 +73,7 @@ abstract class Base implements StorageInterface
      * @access public
      * @return Word Returns an array of all internals.
      */
+    #[\Override]
     public function getInternals()
     {
         $this->storageOpen();
@@ -90,6 +92,7 @@ abstract class Base implements StorageInterface
      * in the format array('tokens' => array(token => count),
      * 'degenerates' => array(token => array(degenerate => count))).
      */
+    #[\Override]
     public function getTokens($tokens)
     {
         $this->storageOpen();
@@ -109,6 +112,7 @@ abstract class Base implements StorageInterface
             # We have to degenerate some tokens
             $degenerates_list = array();
 
+            assert($this->degenerator !== null);
             # Generate a list of degenerated tokens for the missing tokens ...
             $degenerates = $this->degenerator->degenerate($missing_tokens);
 
@@ -134,6 +138,7 @@ abstract class Base implements StorageInterface
             } else {
                 # The token was not found, so we look if we
                 # can return data for degenerated tokens
+                assert($this->degenerator !== null);
                 foreach ($this->degenerator->getDegenerates($token) as $degenerate) {
                     if (isset($token_data[$degenerate]) === true) {
                         # A degeneration of the token way found in the database
@@ -156,10 +161,11 @@ abstract class Base implements StorageInterface
      *
      * @access public
      * @param array $tokens
-     * @param string $category Either b8::HAM or b8::SPAM
-     * @param string $action Either b8::LEARN or b8::UNLEARN
+     * @param string $category Either BinaryClassifier::HAM or BinaryClassifier::SPAM
+     * @param string $action Either BinaryClassifier::LEARN or BinaryClassifier::UNLEARN
      * @return void
      */
+    #[\Override]
     public function processText($tokens, $category, $action)
     {
         # No matter what we do, we first have to check what data we have.
@@ -182,16 +188,16 @@ abstract class Base implements StorageInterface
                 $count_spam = $token_data[$token]->count_spam;
 
                 # Increase or decrease the right counter
-                if ($action === b8::LEARN) {
-                    if ($category === b8::HAM) {
+                if ($action === BinaryClassifier::LEARN) {
+                    if ($category === BinaryClassifier::HAM) {
                         $count_ham += $count;
-                    } elseif ($category === b8::SPAM) {
+                    } elseif ($category === BinaryClassifier::SPAM) {
                         $count_spam += $count;
                     }
-                } elseif ($action == b8::UNLEARN) {
-                    if ($category === b8::HAM) {
+                } elseif ($action == BinaryClassifier::UNLEARN) {
+                    if ($category === BinaryClassifier::HAM) {
                         $count_ham -= $count;
-                    } elseif ($category === b8::SPAM) {
+                    } elseif ($category === BinaryClassifier::SPAM) {
                         $count_spam -= $count;
                     }
                 }
@@ -213,10 +219,10 @@ abstract class Base implements StorageInterface
             } else {
                 # We don't have the token. If we unlearn a text, we can't delete it
                 # as we don't have it anyway, so just do something if we learn a text
-                if ($action === b8::LEARN) {
-                    if ($category === b8::HAM) {
+                if ($action === BinaryClassifier::LEARN) {
+                    if ($category === BinaryClassifier::HAM) {
                         $this->storagePut(new Word($token, $count, 0));
-                    } elseif ($category === b8::SPAM) {
+                    } elseif ($category === BinaryClassifier::SPAM) {
                         $this->storagePut(new Word($token, 0, $count));
                     }
                 }
@@ -224,18 +230,18 @@ abstract class Base implements StorageInterface
         }
 
         # Now, all token have been processed, so let's update the right text
-        if ($action === b8::LEARN) {
-            if ($category === b8::HAM) {
+        if ($action === BinaryClassifier::LEARN) {
+            if ($category === BinaryClassifier::HAM) {
                 $internals->count_ham++;
-            } elseif ($category === b8::SPAM) {
+            } elseif ($category === BinaryClassifier::SPAM) {
                 $internals->count_spam++;
             }
-        } elseif ($action == b8::UNLEARN) {
-            if ($category === b8::HAM) {
+        } elseif ($action == BinaryClassifier::UNLEARN) {
+            if ($category === BinaryClassifier::HAM) {
                 if ($internals->count_ham > 0) {
                     $internals->count_ham--;
                 }
-            } elseif ($category === b8::SPAM) {
+            } elseif ($category === BinaryClassifier::SPAM) {
                 if ($internals->count_spam > 0) {
                     $internals->count_spam--;
                 }

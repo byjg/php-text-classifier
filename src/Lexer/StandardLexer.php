@@ -17,7 +17,7 @@
 #   along with this program; if not, write to the Free Software Foundation,
 #   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-namespace B8\Lexer;
+namespace ByJG\TextClassifier\Lexer;
 
 /**
  * Copyright (C) 2006-2014 Tobias Leupold <tobias.leupold@web.de>
@@ -40,8 +40,8 @@ class StandardLexer implements LexerInterface
      */
     private $config;
 
-    private $_tokens         = null;
-    private $_processed_text = null;
+    private array $_tokens         = [];
+    private ?string $_processed_text = null;
 
     # The regular expressions we use to split the text to tokens
     protected $regexp = array(
@@ -72,6 +72,7 @@ class StandardLexer implements LexerInterface
      * @param string $text
      * @return mixed Returns a list of tokens or an error code
      */
+    #[\Override]
     public function getTokens($text)
     {
         # Check if we actually have a string ...
@@ -115,8 +116,9 @@ class StandardLexer implements LexerInterface
         $this->_rawSplit($this->_processed_text);
 
         # Be sure not to return an empty array
+        /** @psalm-suppress RedundantCondition */
         if (count($this->_tokens) == 0) {
-            $this->_tokens['b8*no_tokens'] = 1;
+            $this->_tokens['tc*no_tokens'] = 1;
         }
 
         # Return a list of all found tokens
@@ -132,8 +134,8 @@ class StandardLexer implements LexerInterface
      */
     private function _isValid($token)
     {
-        # Just to be sure that the token's name won't collide with b8's internal variables
-        if(substr($token, 0, 3) == 'b8*') {
+        # Just to be sure that the token's name won't collide with internal variables
+        if(substr($token, 0, 3) == 'tc*') {
             return false;
         }
 
@@ -164,7 +166,7 @@ class StandardLexer implements LexerInterface
      * @param string $word_to_remove
      * @return void
      */
-    private function _addToken($token, $remove, $word_to_remove)
+    private function _addToken($token, $remove, ?string $word_to_remove)
     {
         # Check the validity of the token
         if ($this->_isValid($token) === false) {
@@ -179,7 +181,7 @@ class StandardLexer implements LexerInterface
         }
 
         # If requested, remove the word or it's original version from the text
-        if ($remove === true) {
+        if ($remove === true && $word_to_remove !== null && $this->_processed_text !== null) {
             $this->_processed_text = str_replace($word_to_remove, '', $this->_processed_text);
         }
     }
@@ -210,7 +212,7 @@ class StandardLexer implements LexerInterface
      *
      * @access private
      * @param string $text
-     * @param string $regexp
+     * @param non-empty-string $regexp
      * @return void
      */
     private function _getMarkup($text, $regexp)
@@ -264,7 +266,7 @@ class StandardLexer implements LexerInterface
      */
     private function _rawSplit($text)
     {
-        foreach (preg_split($this->regexp['raw_split'], $text) as $word) {
+        foreach (preg_split($this->regexp['raw_split'], $text) ?: [] as $word) {
             # Check the word and add it to the token list if it's valid
             $this->_addToken($word, false, null);
         }

@@ -1,0 +1,1 @@
+-- NaiveBayes storage base schema

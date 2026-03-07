@@ -1,0 +1,132 @@
+---
+sidebar_position: 1
+---
+
+# BinaryClassifier Class
+
+`ByJG\TextClassifier\BinaryClassifier` is the binary Robinson-Fisher Bayesian spam filter.
+
+## Constructor
+
+```php
+new BinaryClassifier(
+    ConfigBinaryClassifier $config,
+    StorageInterface       $storage,
+    LexerInterface         $lexer,
+    ?LlmInterface          $llm       = null,
+    ?ConfigLlm             $configLlm = null,
+)
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| `$config` | `ConfigBinaryClassifier` | Tuning parameters |
+| `$storage` | `ByJG\TextClassifier\Storage\StorageInterface` | Persistence backend |
+| `$lexer` | `ByJG\TextClassifier\Lexer\LexerInterface` | Tokeniser |
+| `$llm` | `LlmInterface\|null` | Optional LLM for uncertain-score escalation |
+| `$configLlm` | `ConfigLlm\|null` | LLM escalation thresholds (defaults apply when `null`) |
+
+## Methods
+
+### classify()
+
+```php
+public function classify(string|null $text): ClassificationResult|string
+```
+
+Classifies `$text` and returns a `ClassificationResult` on success, or a string error code on failure.
+
+| Return type | Meaning |
+|---|---|
+| `ClassificationResult` | Classification succeeded — inspect `->choice`, `->score`, etc. |
+| `BinaryClassifier::CLASSIFYER_TEXT_MISSING` | `$text` was `null` |
+| `StandardLexer::LEXER_TEXT_NOT_STRING` | `$text` is not a string |
+| `StandardLexer::LEXER_TEXT_EMPTY` | `$text` is an empty string |
+
+```php
+use ByJG\TextClassifier\ClassificationResult;
+
+$result = $b8->classify($text);
+if (!($result instanceof ClassificationResult)) {
+    // handle error code string
+}
+
+echo $result->choice;    // 'spam' or 'ham'
+echo $result->score;     // float 0.0–1.0
+echo $result->escalated; // true if LLM was consulted
+```
+
+When an LLM is injected and `autoLearn=true`, the statistical model is retrained on the LLM decision before returning the final result. `statScores` always reflects the raw score before any LLM involvement.
+
+### learn()
+
+```php
+public function learn(string|null $text, string|null $category): null|string
+```
+
+Trains the classifier with `$text` as a known example of `$category`.
+
+| Parameter | Accepted values |
+|---|---|
+| `$category` | `BinaryClassifier::SPAM` or `BinaryClassifier::HAM` |
+
+Returns `null` on success or an error code string on failure. See [Error Codes](error-codes.md).
+
+### unlearn()
+
+```php
+public function unlearn(string|null $text, string|null $category): null|string
+```
+
+Reverses a previous `learn()` call. Parameters and return values identical to `learn()`.
+
+## ClassificationResult fields
+
+| Field | Type | Description |
+|---|---|---|
+| `choice` | `string` | `'spam'` or `'ham'` |
+| `score` | `float` | Final spam probability `0.0`–`1.0` |
+| `scores` | `array<string, float>` | `['spam' => …, 'ham' => …]` final scores |
+| `statScores` | `array<string, float>` | Raw statistical scores before any LLM escalation |
+| `llmDecision` | `string\|null` | LLM's label if consulted, otherwise `null` |
+| `escalated` | `bool` | `true` when the LLM was invoked |
+
+## Constants
+
+### Category constants
+
+| Constant | Value |
+|---|---|
+| `BinaryClassifier::SPAM` | `'spam'` |
+| `BinaryClassifier::HAM` | `'ham'` |
+
+### Action constants (internal)
+
+| Constant | Value |
+|---|---|
+| `BinaryClassifier::LEARN` | `'learn'` |
+| `BinaryClassifier::UNLEARN` | `'unlearn'` |
+
+### Error code constants
+
+| Constant | Returned by |
+|---|---|
+| `BinaryClassifier::CLASSIFYER_TEXT_MISSING` | `classify()` |
+| `BinaryClassifier::TRAINER_TEXT_MISSING` | `learn()`, `unlearn()` |
+| `BinaryClassifier::TRAINER_CATEGORY_MISSING` | `learn()`, `unlearn()` |
+| `BinaryClassifier::TRAINER_CATEGORY_FAIL` | `learn()`, `unlearn()` |
+
+### Internal
+
+| Constant | Value | Purpose |
+|---|---|---|
+| `BinaryClassifier::DBVERSION` | `3` | Expected database schema version |
+
+## Related
+
+- [ConfigBinaryClassifier reference](config-binary-classifier.md)
+- [ConfigLlm reference](config-llm.md)
+- [How B8 works](../concepts/how-binary-classifier-works.md)
+- [Storage backends](../concepts/storage-backends.md)
+- [Error codes](error-codes.md)
+- [LLM-Assisted Classification](../guides/llm-assisted-classification.md)

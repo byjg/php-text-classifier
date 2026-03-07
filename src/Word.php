@@ -1,6 +1,6 @@
 <?php
 
-namespace B8;
+namespace ByJG\TextClassifier;
 
 class Word
 {

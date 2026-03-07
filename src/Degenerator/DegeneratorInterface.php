@@ -1,7 +1,7 @@
 <?php
 
 
-namespace B8\Degenerator;
+namespace ByJG\TextClassifier\Degenerator;
 
 
 interface DegeneratorInterface

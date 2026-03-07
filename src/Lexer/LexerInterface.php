@@ -1,7 +1,7 @@
 <?php
 
 
-namespace B8\Lexer;
+namespace ByJG\TextClassifier\Lexer;
 
 
 interface LexerInterface

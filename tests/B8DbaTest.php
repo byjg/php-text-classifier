@@ -2,26 +2,23 @@
 
 namespace Test;
 
-use B8\B8;
-use B8\ConfigB8;
-use B8\Degenerator\ConfigDegenerator;
-use B8\Degenerator\StandardDegenerator;
-use B8\Factory;
-use B8\Lexer\ConfigLexer;
-use B8\Lexer\StandardLexer;
-use B8\Storage\Dba;
-use B8\Storage\Rdbms;
+use ByJG\TextClassifier\BinaryClassifier;
+use ByJG\TextClassifier\ConfigBinaryClassifier;
+use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
+use ByJG\TextClassifier\Degenerator\StandardDegenerator;
+use ByJG\TextClassifier\Lexer\ConfigLexer;
+use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\Storage\Dba;
 
-require_once 'B8Test.php';
+require_once 'B8TestCase.php';
 
 
-class B8DbaTest extends B8Test
+class B8DbaTest extends B8TestCase
 {
     protected function setUp(): void
     {
         $this->path = "/tmp/wordlist.db";
         $this->tearDown();
-        copy(__DIR__ . "/db/wordlist.db", $this->path);
 
         $lexer = new StandardLexer(
             (new ConfigLexer())
@@ -38,8 +35,9 @@ class B8DbaTest extends B8Test
             $this->path,
             $degenerator
         );
+        $storage->createDatabase();
 
-        $this->b8 = new B8(new ConfigB8(), $storage, $lexer);
+        $this->b8 = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, $lexer);
     }
 
 }
