@@ -1,10 +1,4 @@
----
-tags: [php, text-classification, ai]
----
-
 # text-classifier — Bayesian Text Classifier
-
-A PHP library for statistical text classification. Provides two independent engines:
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml)
@@ -80,12 +74,12 @@ $result = $nb->classify('programming language');
 
 | Section | Description |
 |---|---|
-| [Getting Started](getting-started/installation) | Installation, requirements, first working example |
-| [Guides: Spam Filter](guides/spam-filter/training) | Training, classifying, choosing storage |
-| [Guides: Multi-class](guides/multi-class/training) | Training categories, classifying, persistence |
-| [Guide: LLM-Assisted Classification](guides/llm-assisted-classification) | Automatic LLM fallback and active learning |
-| [Concepts](concepts/how-binary-classifier-works) | How the algorithms work, architecture overview |
-| [Reference](reference/binary-classifier) | Full API, configuration parameters, error codes |
+| [Getting Started](docs/getting-started/installation.md) | Installation, requirements, first working example |
+| [Guides: Spam Filter](docs/guides/spam-filter/training.md) | Training, classifying, choosing storage |
+| [Guides: Multi-class](docs/guides/multi-class/training.md) | Training categories, classifying, persistence |
+| [Guide: LLM-Assisted Classification](docs/guides/llm-assisted-classification.md) | Automatic LLM fallback and active learning |
+| [Concepts](docs/concepts/how-binary-classifier-works.md) | How the algorithms work, architecture overview |
+| [Reference](docs/reference/binary-classifier.md) | Full API, configuration parameters, error codes |
 
 ## Acknowledgements
 
