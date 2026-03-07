@@ -4,11 +4,31 @@ sidebar_position: 2
 
 # Classifying Text
 
-`classify()` returns a float between `0.0` and `1.0` representing the probability that the text is spam.
+`classify()` returns a `ClassificationResult` object on success, or a string error code on failure.
 
 ```php
-$score = $b8->classify($text);
+use ByJG\TextClassifier\ClassificationResult;
+
+$result = $b8->classify($text);
+
+if (!($result instanceof ClassificationResult)) {
+    // handle error code string
+}
+
+echo $result->choice;  // 'spam' or 'ham'
+echo $result->score;   // float 0.0–1.0 (spam probability)
 ```
+
+## ClassificationResult fields
+
+| Field | Type | Description |
+|---|---|---|
+| `choice` | `string` | `'spam'` or `'ham'` |
+| `score` | `float` | Spam probability `0.0`–`1.0` (final, after any LLM retraining) |
+| `scores` | `array<string, float>` | `['spam' => …, 'ham' => …]` final scores |
+| `statScores` | `array<string, float>` | Raw statistical scores before any LLM escalation |
+| `llmDecision` | `string\|null` | LLM's label if it was consulted, otherwise `null` |
+| `escalated` | `bool` | `true` when the LLM was invoked |
 
 ## Interpreting the score
 
@@ -24,20 +44,23 @@ $score = $b8->classify($text);
 
 ## Choosing a threshold
 
-The default range for "uncertain" is `0.4`–`0.6`. Adjust based on your use case:
-
 ```php
-$score = $b8->classify($text);
+use ByJG\TextClassifier\ClassificationResult;
+
+$result = $b8->classify($text);
+if (!($result instanceof ClassificationResult)) {
+    // handle error
+}
 
 // Aggressive spam filtering (minimise false negatives)
-if ($score > 0.7) {
+if ($result->score > 0.7) {
     rejectMessage();
 }
 
 // Conservative (minimise false positives)
-if ($score > 0.9) {
+if ($result->score > 0.9) {
     rejectMessage();
-} elseif ($score > 0.7) {
+} elseif ($result->score > 0.7) {
     quarantineMessage();
 }
 ```
@@ -54,7 +77,7 @@ When a token is not found in the database, b8 tries degenerated variants (case v
 
 ## Error codes
 
-`classify()` returns a string error code instead of a float when something goes wrong:
+`classify()` returns a string error code instead of a `ClassificationResult` when something goes wrong:
 
 | Constant | Meaning |
 |---|---|
@@ -62,17 +85,9 @@ When a token is not found in the database, b8 tries degenerated variants (case v
 | `StandardLexer::LEXER_TEXT_NOT_STRING` | `$text` is not a string |
 | `StandardLexer::LEXER_TEXT_EMPTY` | `$text` is an empty string |
 
-Always check that the return value is a `float` before using it:
-
-```php
-$score = $b8->classify($text);
-if (!is_float($score)) {
-    // handle error
-}
-```
-
 ## Related
 
 - [How B8 works](../../concepts/how-b8-works.md) — the Robinson-Fisher algorithm explained
 - [ConfigBinaryClassifier reference](../../reference/config-b8.md) — all tuning parameters
 - [Error codes reference](../../reference/error-codes.md)
+- [LLM-Assisted Classification](../../guides/llm-assisted-classification.md)

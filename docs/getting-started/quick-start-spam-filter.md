@@ -53,15 +53,20 @@ $b8->learn('Your order has been shipped', BinaryClassifier::HAM);
 ## 4. Classify new text
 
 ```php
-$score = $b8->classify('win money fast click now');
-// Returns a float between 0.0 (ham) and 1.0 (spam)
+use ByJG\TextClassifier\ClassificationResult;
 
-if ($score > 0.8) {
-    echo "Spam ($score)";
-} elseif ($score < 0.2) {
-    echo "Ham ($score)";
+$result = $b8->classify('win money fast click now');
+
+if (!($result instanceof ClassificationResult)) {
+    // handle error
+}
+
+if ($result->score > 0.8) {
+    echo "Spam ({$result->score})";
+} elseif ($result->score < 0.2) {
+    echo "Ham ({$result->score})";
 } else {
-    echo "Unsure ($score)";
+    echo "Unsure ({$result->score})";
 }
 ```
 
@@ -77,11 +82,12 @@ $b8->learn('Your invoice is attached', BinaryClassifier::SPAM);
 
 ## What happens on first classify
 
-Before any training, `classify()` returns `0.5` — the filter has no opinion. The more you train it, the more accurate it becomes. The quality of training data matters more than the quantity.
+Before any training, `classify()` returns a result with `score = 0.5` — the filter has no opinion. The more you train it, the more accurate it becomes. The quality of training data matters more than the quantity.
 
 ## Next steps
 
 - [Training guide](../guides/spam-filter/training.md) — best practices, batch training, unlearn
 - [Classifying guide](../guides/spam-filter/classifying.md) — interpreting scores, thresholds
+- [LLM-assisted classification](../guides/llm-assisted-classification.md) — automatic fallback with active learning
 - [Storage: SQLite / MySQL / PostgreSQL](../guides/spam-filter/storage-rdbms.md)
 - [Storage: BerkeleyDB](../guides/spam-filter/storage-dba.md)

@@ -2,7 +2,10 @@
 
 namespace ByJG\TextClassifier\NaiveBayes;
 
+use ByJG\TextClassifier\ClassificationResult;
 use ByJG\TextClassifier\Lexer\LexerInterface;
+use ByJG\TextClassifier\Llm\ConfigLlm;
+use ByJG\TextClassifier\Llm\LlmInterface;
 use ByJG\TextClassifier\NaiveBayes\Storage\StorageInterface;
 
 class NaiveBayes
@@ -10,7 +13,9 @@ class NaiveBayes
     public function __construct(
         private StorageInterface $storage,
         private LexerInterface $lexer,
-        private ConfigNaiveBayes $config = new ConfigNaiveBayes()
+        private ConfigNaiveBayes $config = new ConfigNaiveBayes(),
+        private ?LlmInterface $llm = null,
+        private ?ConfigLlm $configLlm = null,
     ) {}
 
     /**
@@ -54,11 +59,58 @@ class NaiveBayes
     }
 
     /**
-     * Classify a text and return an array of category => score (0.0–1.0), sorted by score descending.
-     *
+     * Classify a text and return a ClassificationResult, or null when the storage has no categories.
+     * If an LlmInterface was provided, escalates to it when the statistical confidence is insufficient.
+     */
+    public function classify(string $text): ?ClassificationResult
+    {
+        $statScores = $this->statisticalClassify($text);
+        $scores     = $statScores;
+
+        $llmDecision = null;
+        $escalated   = false;
+
+        if ($this->llm !== null) {
+            $config = $this->configLlm ?? new ConfigLlm();
+            $vals   = array_values($statScores);
+            $top    = $vals[0] ?? 0.0;
+            $second = $vals[1] ?? 0.0;
+
+            $shouldEscalate = empty($statScores)
+                || $top < $config->getMinConfidence()
+                || ($top - $second) < $config->getMinMargin();
+
+            if ($shouldEscalate) {
+                $categories = $this->storage->getCategories();
+                if (!empty($categories)) {
+                    $llmDecision = $this->llm->classify($text, $categories);
+                    $escalated   = true;
+                    if ($config->isAutoLearn()) {
+                        $this->train($text, $llmDecision);
+                        $scores = $this->statisticalClassify($text);
+                    }
+                }
+            }
+        }
+
+        if (empty($scores)) {
+            return null;
+        }
+
+        return new ClassificationResult(
+            choice:      array_key_first($scores),
+            score:       (float) reset($scores),
+            scores:      $scores,
+            statScores:  $statScores,
+            llmDecision: $llmDecision,
+            escalated:   $escalated,
+        );
+    }
+
+    /**
      * @return array<string, float>
      */
-    public function classify(string $text): array
+    private function statisticalClassify(string $text): array
     {
         $tokens = $this->lexer->getTokens($text);
         if (!is_array($tokens)) {

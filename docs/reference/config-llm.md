@@ -10,10 +10,10 @@ sidebar_position: 7
 
 | Parameter | Setter | Default | Applies to | Description |
 |---|---|---|---|---|
-| `lowerBound` | `setLowerBound(float)` | `0.35` | `LlmAssistedBinaryClassifier` | Escalate when score ≥ this value… |
-| `upperBound` | `setUpperBound(float)` | `0.65` | `LlmAssistedBinaryClassifier` | …and score ≤ this value. Scores outside `[lowerBound, upperBound]` are considered certain. |
-| `minConfidence` | `setMinConfidence(float)` | `0.65` | `LlmAssistedNaiveBayes` | Escalate when the top category score is below this threshold. |
-| `minMargin` | `setMinMargin(float)` | `0.15` | `LlmAssistedNaiveBayes` | Escalate when the gap between the top and second category score is below this threshold. |
+| `lowerBound` | `setLowerBound(float)` | `0.35` | `BinaryClassifier` | Escalate when score ≥ this value… |
+| `upperBound` | `setUpperBound(float)` | `0.65` | `BinaryClassifier` | …and score ≤ this value. Scores outside `[lowerBound, upperBound]` are considered certain. |
+| `minConfidence` | `setMinConfidence(float)` | `0.65` | `NaiveBayes` | Escalate when the top category score is below this threshold. |
+| `minMargin` | `setMinMargin(float)` | `0.15` | `NaiveBayes` | Escalate when the gap between the top and second category score is below this threshold. |
 | `autoLearn` | `setAutoLearn(bool)` | `true` | Both | When `true`, the LLM decision is fed back to the classifier as training data and the text is re-classified. |
 
 ## Usage

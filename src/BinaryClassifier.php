@@ -31,6 +31,8 @@ namespace ByJG\TextClassifier;
 
 use ByJG\TextClassifier\Degenerator\DegeneratorInterface;
 use ByJG\TextClassifier\Lexer\LexerInterface;
+use ByJG\TextClassifier\Llm\ConfigLlm;
+use ByJG\TextClassifier\Llm\LlmInterface;
 use ByJG\TextClassifier\Storage\StorageInterface;
 use ByJG\MicroOrm\Mapper;
 use Exception;
@@ -87,7 +89,7 @@ class BinaryClassifier
      * @param LexerInterface $lexer
      * @throws Exception
      */
-    function __construct($config, $storage, $lexer)
+    function __construct($config, $storage, $lexer, private ?LlmInterface $llm = null, private ?ConfigLlm $configLlm = null)
     {
         $this->config = $config;
         $this->lexer = $lexer;
@@ -95,13 +97,55 @@ class BinaryClassifier
     }
 
     /**
-     * Classifies a text
+     * Classifies a text, escalating to LLM when the score is uncertain (if an LlmInterface was provided).
      *
      * @access public
      * @param string $text
-     * @return mixed float The rating between 0 (ham) and 1 (spam) or an error code
+     * @return ClassificationResult|string ClassificationResult on success, or an error-code string.
      */
-    public function classify($text = null)
+    public function classify($text = null): ClassificationResult|string
+    {
+        $raw = $this->statisticalClassify($text);
+
+        if (!is_float($raw)) {
+            return $raw; // error code string
+        }
+
+        $statScore   = $raw;
+        $score       = $raw;
+        $llmDecision = null;
+        $escalated   = false;
+
+        if ($this->llm !== null && is_string($text)) {
+            $config = $this->configLlm ?? new ConfigLlm();
+            if ($score >= $config->getLowerBound() && $score <= $config->getUpperBound()) {
+                $llmDecision = $this->llm->classify($text, [self::SPAM, self::HAM]);
+                $escalated   = true;
+                if ($config->isAutoLearn()) {
+                    $this->learn($text, $llmDecision);
+                    $updated = $this->statisticalClassify($text);
+                    if (is_float($updated)) {
+                        $score = $updated;
+                    }
+                }
+            }
+        }
+
+        $statScores = [self::SPAM => $statScore, self::HAM => 1.0 - $statScore];
+        $scores     = [self::SPAM => $score,     self::HAM => 1.0 - $score];
+        $choice     = $score >= 0.5 ? self::SPAM : self::HAM;
+
+        return new ClassificationResult(
+            choice:      $choice,
+            score:       $score,
+            scores:      $scores,
+            statScores:  $statScores,
+            llmDecision: $llmDecision,
+            escalated:   $escalated,
+        );
+    }
+
+    private function statisticalClassify($text = null)
     {
         # Let's first see if the user called the function correctly
         if ($text === null) {

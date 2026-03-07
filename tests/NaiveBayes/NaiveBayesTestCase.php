@@ -24,7 +24,7 @@ abstract class NaiveBayesTestCase extends TestCase
     {
         // Unknown text before any training
         $result = $this->nb->classify('hello world');
-        $this->assertEmpty($result);
+        $this->assertNull($result);
 
         // Train two categories
         $this->nb->train('The cat sat on the mat', 'animals');
@@ -34,13 +34,13 @@ abstract class NaiveBayesTestCase extends TestCase
 
         // Animals text should score highest for animals
         $result = $this->nb->classify('the cat and the dog');
-        $this->assertArrayHasKey('animals', $result);
-        $this->assertArrayHasKey('tech', $result);
-        $this->assertEquals('animals', array_key_first($result));
+        $this->assertArrayHasKey('animals', $result->scores);
+        $this->assertArrayHasKey('tech', $result->scores);
+        $this->assertEquals('animals', $result->choice);
 
         // Tech text should score highest for tech
         $result = $this->nb->classify('programming language learning');
-        $this->assertEquals('tech', array_key_first($result));
+        $this->assertEquals('tech', $result->choice);
     }
 
     public function testUntrain(): void
@@ -53,12 +53,12 @@ abstract class NaiveBayesTestCase extends TestCase
 
         $result = $this->nb->classify('cat mat');
         // After untraining one, animals still has one training sample so it should still win
-        $this->assertEquals('animals', array_key_first($result));
+        $this->assertEquals('animals', $result->choice);
 
         // Untrain the second animals sample — category should disappear
         $this->nb->untrain('The cat sat on the mat', 'animals');
         $result = $this->nb->classify('cat mat');
-        $this->assertArrayNotHasKey('animals', $result);
+        $this->assertArrayNotHasKey('animals', $result?->scores ?? []);
     }
 
     public function testMultipleCategories(): void
@@ -72,12 +72,12 @@ abstract class NaiveBayesTestCase extends TestCase
         $this->nb->train("Scientific problems and the need to understand the human brain through research", 'en');
 
         $result = $this->nb->classify('ciencia filosófica primitiva');
-        $this->assertEquals('es', array_key_first($result));
+        $this->assertEquals('es', $result->choice);
 
         $result = $this->nb->classify('scientific problems researchers');
-        $this->assertEquals('en', array_key_first($result));
+        $this->assertEquals('en', $result->choice);
 
         $result = $this->nb->classify('Italie gouvernée Monti');
-        $this->assertEquals('fr', array_key_first($result));
+        $this->assertEquals('fr', $result->choice);
     }
 }

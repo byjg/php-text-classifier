@@ -1,18 +1,20 @@
 <?php
 
 /**
- * LLM-assisted bootstrap example
+ * LLM-assisted bootstrap + active learning example
  *
- * Phase 1 — Bootstrap: use Ollama (qwen3.5:3b) to label 20 phrases and train
+ * Phase 1 — Bootstrap: use Ollama (qwen3.5:9b) to label 20 phrases and train
  *           the NaiveBayes statistical model.
- * Phase 2 — Production: classify new phrases using the statistical model only,
- *           with no further LLM calls.
+ * Phase 2 — Production: NaiveBayes classifies new phrases; when confidence is
+ *           too low it escalates to the LLM internally and retrains (active
+ *           learning loop). No wrapper class needed.
  */
 
 require_once __DIR__ . '/vendor/autoload.php';
 
 use ByJG\TextClassifier\Lexer\ConfigLexer;
 use ByJG\TextClassifier\Lexer\StandardLexer;
+use ByJG\TextClassifier\Llm\ConfigLlm;
 use ByJG\TextClassifier\Llm\OpenAiLlmClient;
 use ByJG\TextClassifier\NaiveBayes\NaiveBayes;
 use ByJG\TextClassifier\NaiveBayes\Storage\Memory;
@@ -23,23 +25,20 @@ use ByJG\TextClassifier\NaiveBayes\Storage\Memory;
 
 $openai = OpenAI::factory()
     ->withBaseUri('http://localhost:11434/v1')
-    ->withApiKey('ollama')          // Ollama ignores this but the client requires it
+    ->withApiKey('ollama')
     ->make();
 
 $llm = new OpenAiLlmClient($openai, 'qwen3.5:9b');
 
+$categories = ['tech', 'animals', 'sports', 'cooking'];
+
 // ---------------------------------------------------------------------------
-// Statistical model
+// Phase 1 — Bootstrap: label 20 phrases with the LLM, train the model
+// (no LLM injected yet — plain NaiveBayes, we call $llm->classify() directly)
 // ---------------------------------------------------------------------------
 
 $storage = new Memory();
 $nb      = new NaiveBayes($storage, new StandardLexer(new ConfigLexer()));
-
-// ---------------------------------------------------------------------------
-// Phase 1 — Bootstrap: label 20 phrases with the LLM, train the model
-// ---------------------------------------------------------------------------
-
-$categories = ['tech', 'animals', 'sports', 'cooking'];
 
 $phrases = [
     'PHP is a widely used server-side scripting language for web development',
@@ -66,17 +65,28 @@ $phrases = [
 
 echo "=== Phase 1: Bootstrap — LLM labels phrases and trains the statistical model ===\n\n";
 
-foreach ($phrases as $text) {
+$total = count($phrases);
+foreach ($phrases as $i => $text) {
+    fprintf(STDERR, "\r[%d/%d] Labelling…%-30s", $i + 1, $total, '');
     $category = $llm->classify($text, $categories);
     $nb->train($text, $category);
     echo sprintf("  [%-8s] %s\n", $category, mb_strimwidth($text, 0, 70, '…'));
 }
+fprintf(STDERR, "\r%s\r", str_repeat(' ', 60));
 
 echo "\nTraining complete. " . count($phrases) . " phrases labelled by LLM and fed into the statistical model.\n";
 
 // ---------------------------------------------------------------------------
-// Phase 2 — Production: statistical model only, no LLM calls
+// Phase 2 — Production: inject LLM into NaiveBayes for automatic fallback
 // ---------------------------------------------------------------------------
+
+$config = (new ConfigLlm())
+    ->setMinConfidence(0.65)  // escalate when top score < 65%
+    ->setMinMargin(0.15)      // escalate when top - second < 15%
+    ->setAutoLearn(true);     // feed LLM decisions back to improve the model
+
+// Rebuild NaiveBayes over the same storage, now with LLM wired in
+$nb = new NaiveBayes($storage, new StandardLexer(new ConfigLexer()), llm: $llm, configLlm: $config);
 
 $testPhrases = [
     'Pandas eat bamboo shoots and live in the mountains of China',
@@ -86,17 +96,25 @@ $testPhrases = [
     'A relational database stores data in tables with rows and columns',
 ];
 
-echo "\n=== Phase 2: Production — statistical model only (no LLM) ===\n\n";
+echo "\n=== Phase 2: Production — statistical model with automatic LLM fallback ===\n\n";
 
-foreach ($testPhrases as $text) {
-    $scores = $nb->classify($text);
-    $top    = array_key_first($scores);
-    $score  = reset($scores);
+$total = count($testPhrases);
+foreach ($testPhrases as $i => $text) {
+    fprintf(STDERR, "\r[%d/%d] Classifying…%-30s", $i + 1, $total, '');
+
+    $result    = $nb->classify($text);
+    $statTop   = array_key_first($result->statScores) ?? '?';
+    $statScore = array_values($result->statScores)[0] ?? 0.0;
+    $flag      = $result->escalated ? ' ⬆ LLM' : '      ';
 
     echo sprintf(
-        "  [%-8s %.0f%%] %s\n",
-        $top,
-        $score * 100,
-        mb_strimwidth($text, 0, 70, '…')
+        "  stat [%-8s %3.0f%%]%s → [%-8s %3.0f%%]  %s\n",
+        $statTop,
+        $statScore * 100,
+        $flag,
+        $result->choice,
+        $result->score * 100,
+        mb_strimwidth($text, 0, 55, '…')
     );
 }
+fprintf(STDERR, "\r%s\r", str_repeat(' ', 60));

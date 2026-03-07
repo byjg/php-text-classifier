@@ -74,7 +74,7 @@ Default: `minConfidence = 0.65`, `minMargin = 0.15`.
    classifier.classify(text)  ← return updated score
 ```
 
-With `autoLearn = false`, the LLM decides but no training happens. The score returned is the original uncertain score.
+With `autoLearn = false`, the LLM decides but no training happens. `score` in the `ClassificationResult` reflects the original uncertain statistical score; `llmDecision` still records what the LLM chose.
 
 ## Cost considerations
 

@@ -46,13 +46,13 @@ $nb->train("Scientific problems and the need to understand the human brain throu
 
 ```php
 $result = $nb->classify('ciencia filosófica primitiva');
-echo array_key_first($result); // 'es'
+echo $result->choice; // 'es'
 
 $result = $nb->classify('scientific problems researchers');
-echo array_key_first($result); // 'en'
+echo $result->choice; // 'en'
 
 $result = $nb->classify('Italie gouvernée Monti');
-echo array_key_first($result); // 'fr'
+echo $result->choice; // 'fr'
 ```
 
 ## Persist the trained model

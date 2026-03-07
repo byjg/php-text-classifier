@@ -4,25 +4,27 @@ sidebar_position: 2
 
 # NaiveBayes Class
 
-`B8\NaiveBayes\NaiveBayes` is the multi-class Naive Bayes text classifier.
+`ByJG\TextClassifier\NaiveBayes\NaiveBayes` is the multi-class Naive Bayes text classifier.
 
 ## Constructor
 
 ```php
 new NaiveBayes(
-    StorageInterface $storage,
-    LexerInterface   $lexer,
-    ConfigNaiveBayes $config = new ConfigNaiveBayes()
+    StorageInterface  $storage,
+    LexerInterface    $lexer,
+    ConfigNaiveBayes  $config    = new ConfigNaiveBayes(),
+    ?LlmInterface     $llm       = null,
+    ?ConfigLlm        $configLlm = null,
 )
 ```
 
 | Parameter | Type | Description |
 |---|---|---|
-| `$storage` | `B8\NaiveBayes\Storage\StorageInterface` | Persistence backend |
+| `$storage` | `ByJG\TextClassifier\NaiveBayes\Storage\StorageInterface` | Persistence backend |
 | `$lexer` | `ByJG\TextClassifier\Lexer\LexerInterface` | Tokeniser |
 | `$config` | `ConfigNaiveBayes` | Smoothing parameters (optional) |
-
-`$config` uses PHP 8.1+ constructor promotion default — if omitted, a default `ConfigNaiveBayes` is created automatically.
+| `$llm` | `LlmInterface\|null` | Optional LLM for low-confidence escalation |
+| `$configLlm` | `ConfigLlm\|null` | LLM escalation thresholds (defaults apply when `null`) |
 
 ## Methods
 
@@ -45,28 +47,46 @@ public function untrain(string $text, string $category): void
 
 Reverses a previous `train()` call. Decrements document and token counts. If a category's document count reaches zero, it is removed from storage.
 
+### getCategories()
+
+```php
+public function getCategories(): array<string>
+```
+
+Returns the list of categories currently present in storage.
+
 ### classify()
 
 ```php
-public function classify(string $text): array<string, float>
+public function classify(string $text): ?ClassificationResult
 ```
 
-Classifies `$text` and returns an array of `category => score` pairs, sorted by score descending.
+Classifies `$text` and returns a `ClassificationResult`, or `null` when no categories have been trained yet.
 
 | Return value | Meaning |
 |---|---|
-| Non-empty array | `['category' => 0.94, ...]` sorted descending |
-| Empty array `[]` | No categories trained yet, or lexer returned no tokens |
-
-Scores are floats between `0.0` and `1.0`. They are not probabilities that sum to `1.0` — each category is scored independently in a one-vs-rest fashion.
+| `ClassificationResult` | Classification succeeded |
+| `null` | No categories trained, or only one category exists (one-vs-rest requires ≥ 2) |
 
 ```php
-$scores = $nb->classify('machine learning algorithms');
-// ['tech' => 0.91, 'science' => 0.67, 'politics' => 0.49]
+$result = $nb->classify('machine learning algorithms');
 
-$topCategory = array_key_first($scores);  // 'tech'
-$topScore    = $scores[$topCategory];     // 0.91
+echo $result->choice;   // 'tech'
+echo $result->score;    // 0.91
 ```
+
+When an LLM is injected and `autoLearn=true`, the model is retrained on the LLM decision before returning. `statScores` always reflects the raw score before any LLM involvement.
+
+## ClassificationResult fields
+
+| Field | Type | Description |
+|---|---|---|
+| `choice` | `string` | Winning category name |
+| `score` | `float` | Final score of the winning category `0.0`–`1.0` |
+| `scores` | `array<string, float>` | All final scores, sorted descending |
+| `statScores` | `array<string, float>` | Raw statistical scores before any LLM escalation |
+| `llmDecision` | `string\|null` | LLM's label if consulted, otherwise `null` |
+| `escalated` | `bool` | `true` when the LLM was invoked |
 
 ## Usage example
 
@@ -84,13 +104,16 @@ $nb = new NaiveBayes(
 $nb->train('PHP is a programming language', 'tech');
 $nb->train('The dog ran in the park', 'animals');
 
-$scores = $nb->classify('programming language');
-// ['tech' => ..., 'animals' => ...]
+$result = $nb->classify('programming language');
+echo $result->choice;  // 'tech'
+echo $result->score;   // e.g. 0.87
 ```
 
 ## Related
 
 - [ConfigNaiveBayes reference](config-naive-bayes.md)
+- [ConfigLlm reference](config-llm.md)
 - [How NaiveBayes works](../concepts/how-naive-bayes-works.md)
 - [Training guide](../guides/multi-class/training.md)
 - [Classifying guide](../guides/multi-class/classifying.md)
+- [LLM-Assisted Classification](../guides/llm-assisted-classification.md)

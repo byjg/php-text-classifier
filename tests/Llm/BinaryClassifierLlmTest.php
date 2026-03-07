@@ -9,12 +9,11 @@ use ByJG\TextClassifier\Degenerator\StandardDegenerator;
 use ByJG\TextClassifier\Lexer\ConfigLexer;
 use ByJG\TextClassifier\Lexer\StandardLexer;
 use ByJG\TextClassifier\Llm\ConfigLlm;
-use ByJG\TextClassifier\Llm\LlmAssistedBinaryClassifier;
 use ByJG\TextClassifier\Llm\LlmInterface;
 use ByJG\TextClassifier\Storage\Dba;
 use PHPUnit\Framework\TestCase;
 
-class LlmAssistedBinaryClassifierTest extends TestCase
+class BinaryClassifierLlmTest extends TestCase
 {
     private string $path = '/tmp/llm_b8_test.db';
     private BinaryClassifier $classifier;
@@ -47,14 +46,20 @@ class LlmAssistedBinaryClassifierTest extends TestCase
             ->method('classify')
             ->willReturn('spam');
 
-        $assisted = new LlmAssistedBinaryClassifier($this->classifier, $llm);
+        // Build a fresh classifier with LLM injected
+        $lexer       = new StandardLexer(new ConfigLexer());
+        $degenerator = new StandardDegenerator(new ConfigDegenerator());
+        $storage     = new Dba($this->path, $degenerator);
+
+        $classifier = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, $lexer, $llm);
 
         // Untrained classifier returns 0.5, which is in the uncertain range
-        $result = $assisted->classify('buy cheap pills now');
+        $result = $classifier->classify('buy cheap pills now');
 
-        $this->assertIsFloat($result);
-        // After LLM decided spam and autoLearn re-trained, score should shift toward spam
-        $this->assertGreaterThan(0.5, $result);
+        $this->assertInstanceOf(\ByJG\TextClassifier\ClassificationResult::class, $result);
+        $this->assertTrue($result->escalated);
+        $this->assertEquals('spam', $result->llmDecision);
+        $this->assertGreaterThan(0.5, $result->score);
     }
 
     public function testCertainScoreSkipsLlm(): void
@@ -67,11 +72,17 @@ class LlmAssistedBinaryClassifierTest extends TestCase
         $llm = $this->createMock(LlmInterface::class);
         $llm->expects($this->never())->method('classify');
 
-        $assisted = new LlmAssistedBinaryClassifier($this->classifier, $llm);
-        $result   = $assisted->classify('buy cheap pills now');
+        $lexer       = new StandardLexer(new ConfigLexer());
+        $degenerator = new StandardDegenerator(new ConfigDegenerator());
+        $storage     = new Dba($this->path, $degenerator);
 
-        $this->assertIsFloat($result);
-        $this->assertGreaterThan(0.65, $result);
+        $classifier = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, $lexer, $llm);
+        $result     = $classifier->classify('buy cheap pills now');
+
+        $this->assertInstanceOf(\ByJG\TextClassifier\ClassificationResult::class, $result);
+        $this->assertFalse($result->escalated);
+        $this->assertNull($result->llmDecision);
+        $this->assertGreaterThan(0.65, $result->score);
     }
 
     public function testAutoLearnFalseCallsLlmButDoesNotLearn(): void
@@ -81,13 +92,19 @@ class LlmAssistedBinaryClassifierTest extends TestCase
             ->method('classify')
             ->willReturn('ham');
 
-        $config   = (new ConfigLlm())->setAutoLearn(false);
-        $assisted = new LlmAssistedBinaryClassifier($this->classifier, $llm, $config);
+        $lexer       = new StandardLexer(new ConfigLexer());
+        $degenerator = new StandardDegenerator(new ConfigDegenerator());
+        $storage     = new Dba($this->path, $degenerator);
+        $config      = (new ConfigLlm())->setAutoLearn(false);
 
-        // Uncertain score triggers LLM
-        $result = $assisted->classify('some ambiguous text');
+        $classifier = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, $lexer, $llm, $config);
 
-        // With autoLearn=false, no learn() was called so score remains 0.5
-        $this->assertEquals(0.5, $result);
+        // With autoLearn=false, no learn() call → score stays at 0.5
+        $result = $classifier->classify('some ambiguous text');
+
+        $this->assertInstanceOf(\ByJG\TextClassifier\ClassificationResult::class, $result);
+        $this->assertTrue($result->escalated);
+        $this->assertEquals('ham', $result->llmDecision);
+        $this->assertEquals(0.5, $result->score);
     }
 }

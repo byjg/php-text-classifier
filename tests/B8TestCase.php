@@ -23,28 +23,27 @@ abstract class B8TestCase extends TestCase
 
     public function testLearnAndClassify()
     {
-        $expected = 0.5;
         $result = $this->b8->classify("this is a bad text");
-        $this->assertEquals($expected, $result);
+        $this->assertEquals(0.5, $result->score);
 
         $this->b8->learn("this is a bad text", BinaryClassifier::SPAM);
 
         $expected = 0.88461538;
         $result = $this->b8->classify("talking bad");
-        $this->assertGreaterThanOrEqual($expected, $result);
-        $this->assertLessThanOrEqual($expected + 0.01, $result);
+        $this->assertGreaterThanOrEqual($expected, $result->score);
+        $this->assertLessThanOrEqual($expected + 0.01, $result->score);
 
         $this->b8->learn("john is a good person", BinaryClassifier::HAM);
 
         $expected = 0.11538461;
         $result = $this->b8->classify("talking about john");
-        $this->assertGreaterThanOrEqual($expected, $result);
-        $this->assertLessThanOrEqual($expected + 0.01, $result);
+        $this->assertGreaterThanOrEqual($expected, $result->score);
+        $this->assertLessThanOrEqual($expected + 0.01, $result->score);
 
         $expected = 0.41649054;
         $result = $this->b8->classify("talking bad person john");
-        $this->assertGreaterThanOrEqual($expected, $result);
-        $this->assertLessThanOrEqual($expected + 0.01, $result);
+        $this->assertGreaterThanOrEqual($expected, $result->score);
+        $this->assertLessThanOrEqual($expected + 0.01, $result->score);
     }
 
 }

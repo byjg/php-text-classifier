@@ -36,14 +36,16 @@ $nb->train('The new tax policy will affect small businesses', 'politics');
 ## 3. Classify text
 
 ```php
-$scores = $nb->classify('programming language learning algorithms');
+$result = $nb->classify('programming language learning algorithms');
 
-// Returns an array sorted by score descending:
-// ['tech' => 0.94, 'animals' => 0.53, 'politics' => 0.48]
+echo $result->choice;  // 'tech'
+echo $result->score;   // e.g. 0.94
 
-$topCategory = array_key_first($scores);
-echo "Best match: $topCategory"; // tech
+// All scores, sorted descending
+// $result->scores => ['tech' => 0.94, 'animals' => 0.53, 'politics' => 0.48]
 ```
+
+`classify()` returns `null` when no categories have been trained yet.
 
 ## 4. Persist to disk (Memory storage)
 
@@ -65,13 +67,14 @@ $nb2 = new NaiveBayes($storage2, new StandardLexer(new ConfigLexer()));
 $nb->untrain('PHP is a server-side programming language', 'tech');
 ```
 
-## Scores explained
+## Result explained
 
-`classify()` returns `array<string, float>` sorted by score descending. Scores are not raw probabilities — they are Robinson-smoothed values between `0.0` and `1.0`. A higher score means stronger evidence that the text belongs to that category. An empty array means no categories have been trained yet.
+`classify()` returns a `ClassificationResult` with `choice` (winning category), `score` (its confidence, `0.0`–`1.0`), and `scores` (all categories sorted descending). Scores are Robinson-smoothed values — a higher score means stronger evidence. Returns `null` when no categories have been trained yet.
 
 ## Next steps
 
 - [Training guide](../guides/multi-class/training.md) — adding and removing samples, category lifecycle
 - [Classifying guide](../guides/multi-class/classifying.md) — interpreting scores, confidence thresholds
+- [LLM-assisted classification](../guides/llm-assisted-classification.md) — automatic fallback with active learning
 - [Persistent SQL storage](../guides/multi-class/storage-rdbms.md)
 - [Example: language detection](../guides/multi-class/example-language-detection.md)

@@ -27,7 +27,7 @@ class NaiveBayesMemoryTest extends NaiveBayesTestCase
         $storage2->load($file);
 
         $result = $this->nb->classify('cat mat');
-        $this->assertEquals('animals', array_key_first($result));
+        $this->assertEquals('animals', $result->choice);
 
         unlink($file);
     }
