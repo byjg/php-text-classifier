@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # ConfigNaiveBayes
 
-`B8\NaiveBayes\ConfigNaiveBayes` controls the smoothing behaviour of the `NaiveBayes` classifier. Parameters are set via constructor.
+`ByJG\TextClassifier\NaiveBayes\ConfigNaiveBayes` controls the smoothing behaviour of the `NaiveBayes` classifier. Parameters are set via constructor.
 
 ## Constructor
 
@@ -64,4 +64,4 @@ The neutral prior. `0.5` means "no information" — a token never seen in any ca
 | `robS` | `0.3` | `1.0` |
 | `robX` | `0.5` | `0.5` |
 
-NaiveBayes uses a higher `robS` because the one-vs-rest approach with multiple categories is more sensitive to sparse data than the binary Fisher test used by B8.
+NaiveBayes uses a higher `robS` because the one-vs-rest approach with multiple categories is more sensitive to sparse data than the binary Fisher test used by `BinaryClassifier`.

@@ -9,7 +9,7 @@ sidebar_position: 2
 ```php
 use ByJG\TextClassifier\ClassificationResult;
 
-$result = $b8->classify($text);
+$result = $classifier->classify($text);
 
 if (!($result instanceof ClassificationResult)) {
     // handle error code string
@@ -47,7 +47,7 @@ echo $result->score;   // float 0.0–1.0 (spam probability)
 ```php
 use ByJG\TextClassifier\ClassificationResult;
 
-$result = $b8->classify($text);
+$result = $classifier->classify($text);
 if (!($result instanceof ClassificationResult)) {
     // handle error
 }
@@ -67,13 +67,13 @@ if ($result->score > 0.9) {
 
 ## Relevance filtering
 
-b8 does not use all tokens in the text. It selects the most "relevant" tokens — those whose spam probability deviates most from `0.5`. The number of tokens considered is controlled by `ConfigBinaryClassifier::setUseRelevant()` (default: `15`) and the minimum deviation threshold `ConfigBinaryClassifier::setMinDev()` (default: `0.2`).
+BinaryClassifier does not use all tokens in the text. It selects the most "relevant" tokens — those whose spam probability deviates most from `0.5`. The number of tokens considered is controlled by `ConfigBinaryClassifier::setUseRelevant()` (default: `15`) and the minimum deviation threshold `ConfigBinaryClassifier::setMinDev()` (default: `0.2`).
 
 Tokens that appear multiple times in the text contribute proportionally — a token appearing three times counts three times in the probability calculation.
 
 ## Degeneration fallback
 
-When a token is not found in the database, b8 tries degenerated variants (case variants, punctuation stripped). If none are found, it uses the neutral value `robX` (default: `0.5`). This prevents unknown words from skewing the score.
+When a token is not found in the database, BinaryClassifier tries degenerated variants (case variants, punctuation stripped). If none are found, it uses the neutral value `robX` (default: `0.5`). This prevents unknown words from skewing the score.
 
 ## Error codes
 
@@ -87,7 +87,7 @@ When a token is not found in the database, b8 tries degenerated variants (case v
 
 ## Related
 
-- [How B8 works](../../concepts/how-b8-works.md) — the Robinson-Fisher algorithm explained
-- [ConfigBinaryClassifier reference](../../reference/config-b8.md) — all tuning parameters
+- [How B8 works](../../concepts/how-binary-classifier-works.md) — the Robinson-Fisher algorithm explained
+- [ConfigBinaryClassifier reference](../../reference/config-binary-classifier.md) — all tuning parameters
 - [Error codes reference](../../reference/error-codes.md)
 - [LLM-Assisted Classification](../../guides/llm-assisted-classification.md)

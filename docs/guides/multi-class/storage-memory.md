@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Storage: Memory
 
-`B8\NaiveBayes\Storage\Memory` keeps all data in PHP arrays. It is the simplest storage option — no setup, no dependencies, no files. Data is lost when the process ends unless you explicitly save it.
+`ByJG\TextClassifier\NaiveBayes\Storage\Memory` keeps all data in PHP arrays. It is the simplest storage option — no setup, no dependencies, no files. Data is lost when the process ends unless you explicitly save it.
 
 ## Setup
 
@@ -58,7 +58,7 @@ $storage = new Memory();
 $storage->load('/var/data/model.json');
 $nb = new NaiveBayes($storage, $lexer);
 
-$scores = $nb->classify($incomingText);
+$result = $nb->classify($incomingText);
 ```
 
 ## Concurrent access

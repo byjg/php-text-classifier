@@ -9,19 +9,20 @@ The BinaryClassifier engine returns string error constants instead of throwing e
 ## Pattern
 
 ```php
-$result = $b8->classify($text);
+use ByJG\TextClassifier\ClassificationResult;
 
-if (!is_float($result)) {
+$result = $classifier->classify($text);
+
+if (!($result instanceof ClassificationResult)) {
     // $result is an error code string
     handleError($result);
     return;
 }
 
-// Safe to use as float
-if ($result > 0.8) { /* spam */ }
+if ($result->score > 0.8) { /* spam */ }
 ```
 
-## B8 classify() error codes
+## BinaryClassifier classify() error codes
 
 | Constant | String value | Trigger condition |
 |---|---|---|
@@ -29,7 +30,7 @@ if ($result > 0.8) { /* spam */ }
 | `StandardLexer::LEXER_TEXT_NOT_STRING` | `'LEXER_TEXT_NOT_STRING'` | `$text` is not a string |
 | `StandardLexer::LEXER_TEXT_EMPTY` | `'LEXER_TEXT_EMPTY'` | `$text` is an empty string |
 
-## B8 learn() / unlearn() error codes
+## BinaryClassifier learn() / unlearn() error codes
 
 | Constant | String value | Trigger condition |
 |---|---|---|
@@ -46,11 +47,11 @@ if ($result > 0.8) { /* spam */ }
 `NaiveBayes::classify()`, `train()`, and `untrain()` do not return error codes. They are void methods (train/untrain) or return an empty array (classify). Invalid input is handled silently:
 
 - Non-string or empty text → lexer returns no tokens → no-op or empty result
-- No trained categories → `classify()` returns `[]`
+- No trained categories → `classify()` returns `null`
 
 ## Lexer error codes
 
-These originate in `StandardLexer` and are propagated by `B8`:
+These originate in `StandardLexer` and are propagated by `BinaryClassifier`:
 
 | Constant | Class | Value |
 |---|---|---|
@@ -62,14 +63,14 @@ If you implement a custom `LexerInterface`, you may return any string error code
 ## Defensive usage example
 
 ```php
-function classifyMessage(BinaryClassifier $b8, mixed $input): ?float
+function classifyMessage(BinaryClassifier $classifier, mixed $input): ?float
 {
     if (!is_string($input) || $input === '') {
         return null;
     }
 
-    $score = $b8->classify($input);
+    $result = $classifier->classify($input);
 
-    return is_float($score) ? $score : null;
+    return ($result instanceof ClassificationResult) ? $result->score : null;
 }
 ```

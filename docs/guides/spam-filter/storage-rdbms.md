@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Storage: SQLite / MySQL / PostgreSQL
 
-`B8\Storage\Rdbms` persists the word list to a relational database using `byjg/micro-orm`. It supports SQLite, MySQL, and PostgreSQL via a URI connection string.
+`ByJG\TextClassifier\Storage\Rdbms` persists the word list to a relational database using `byjg/micro-orm`. It supports SQLite, MySQL, and PostgreSQL via a URI connection string.
 
 ## Setup
 
@@ -68,10 +68,10 @@ scheme://[user[:password]@]host[:port]/database
 
 ## Database table
 
-The `b8_wordlist` table stores one row per unique token:
+The `tc_wordlist` table stores one row per unique token:
 
 ```sql
-CREATE TABLE b8_wordlist (
+CREATE TABLE tc_wordlist (
     token      VARCHAR(255) NOT NULL,
     count_ham  INTEGER DEFAULT NULL,
     count_spam INTEGER DEFAULT NULL,
@@ -83,8 +83,8 @@ Two internal rows are seeded automatically:
 
 | token | purpose |
 |---|---|
-| `b8*dbversion` | Schema version (value: `3`) |
-| `b8*texts` | Total ham/spam text count |
+| `tc*dbversion` | Schema version (value: `3`) |
+| `tc*texts` | Total ham/spam text count |
 
 ## When to use this backend
 
@@ -95,5 +95,5 @@ Two internal rows are seeded automatically:
 
 ## Related
 
-- [Storage: BerkeleyDB](storage-dba.md)
+- [Storage: GDBM](storage-dba.md)
 - [Database schema reference](../../reference/database-schema.md)

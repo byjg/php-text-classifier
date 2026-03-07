@@ -41,12 +41,12 @@ use ByJG\Util\Uri;
 $storage = new Rdbms(new Uri('sqlite:///tmp/spam.db'), new StandardDegenerator(new ConfigDegenerator()));
 $storage->createDatabase();
 
-$b8 = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, new StandardLexer(new ConfigLexer()));
+$classifier = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, new StandardLexer(new ConfigLexer()));
 
-$b8->learn('Buy cheap pills now!!!', BinaryClassifier::SPAM);
-$b8->learn('Meeting at 3pm in the conference room', BinaryClassifier::HAM);
+$classifier->learn('Buy cheap pills now!!!', BinaryClassifier::SPAM);
+$classifier->learn('Meeting at 3pm in the conference room', BinaryClassifier::HAM);
 
-$result = $b8->classify('buy pills online cheap');
+$result = $classifier->classify('buy pills online cheap');
 // $result->choice === 'spam'
 // $result->score  is close to 1.0
 ```
@@ -78,12 +78,12 @@ $result = $nb->classify('programming language');
 | [Guides: Spam Filter](docs/guides/spam-filter/training.md) | Training, classifying, choosing storage |
 | [Guides: Multi-class](docs/guides/multi-class/training.md) | Training categories, classifying, persistence |
 | [Guide: LLM-Assisted Classification](docs/guides/llm-assisted-classification.md) | Automatic LLM fallback and active learning |
-| [Concepts](docs/concepts/how-b8-works.md) | How the algorithms work, architecture overview |
-| [Reference](docs/reference/b8.md) | Full API, configuration parameters, error codes |
+| [Concepts](docs/concepts/how-binary-classifier-works.md) | How the algorithms work, architecture overview |
+| [Reference](docs/reference/binary-classifier.md) | Full API, configuration parameters, error codes |
 
 ## Acknowledgements
 
-This library is inspired by the original **b8** spam filter written by [Tobias Leupold](mailto:tobias.leupold@web.de). The core algorithm, Robinson-Fisher probability model, token degeneration approach, and the `b8*` internal variable convention all originate from his work. This project modernises the codebase for PHP 8.3+, replaces the storage layer with `byjg/micro-orm` and `byjg/migration`, and adds a multi-class NaiveBayes engine built on the same tokenisation pipeline.
+This library is inspired by the original **b8** spam filter written by [Tobias Leupold](mailto:tobias.leupold@web.de). The core algorithm, Robinson-Fisher probability model, token degeneration approach, and the `tc*` internal variable convention all originate from his work. This project modernises the codebase for PHP 8.3+, replaces the storage layer with `byjg/micro-orm` and `byjg/migration`, and adds a multi-class NaiveBayes engine built on the same tokenisation pipeline.
 
 ## Dependencies
 

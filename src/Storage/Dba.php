@@ -56,8 +56,8 @@ class Dba extends Base
     public function createDatabase(): void
     {
         $db = dba_open($this->path, 'c', 'gdbm');
-        dba_insert('b8*dbversion', '3', $db);
-        dba_insert('b8*texts', '0 0', $db);
+        dba_insert('tc*dbversion', '3', $db);
+        dba_insert('tc*texts', '0 0', $db);
         dba_close($db);
     }
 

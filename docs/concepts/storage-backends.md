@@ -10,19 +10,19 @@ Both the BinaryClassifier spam filter and NaiveBayes classifier use pluggable st
 
 | Backend | Class | Persistence | External dependency |
 |---|---|---|---|
-| RDBMS | `B8\Storage\Rdbms` | Database | `byjg/micro-orm` (bundled) |
+| RDBMS | `ByJG\TextClassifier\Storage\Rdbms` | Database | `byjg/micro-orm` (bundled) |
 | GDBM | `ByJG\TextClassifier\Storage\Dba` | File | `ext-dba` PHP extension |
 
 ## NaiveBayes backends
 
 | Backend | Class | Persistence | External dependency |
 |---|---|---|---|
-| Memory | `B8\NaiveBayes\Storage\Memory` | Optional (JSON file) | None |
-| RDBMS | `B8\NaiveBayes\Storage\Rdbms` | Database | `byjg/anydataset-db` (bundled) |
+| Memory | `ByJG\TextClassifier\NaiveBayes\Storage\Memory` | Optional (JSON file) | None |
+| RDBMS | `ByJG\TextClassifier\NaiveBayes\Storage\Rdbms` | Database | `byjg/anydataset-db` (bundled) |
 
 ## Feature comparison
 
-| Feature | B8 Rdbms | B8 Dba | NB Memory | NB Rdbms |
+| Feature | BC Rdbms | BC Dba | NB Memory | NB Rdbms |
 |---|---|---|---|---|
 | Persistent by default | Yes | Yes | No (opt-in via `save()`) | Yes |
 | Multiple process safe | Yes | No | No | Yes |
@@ -35,7 +35,7 @@ Both the BinaryClassifier spam filter and NaiveBayes classifier use pluggable st
 
 ## Choosing a backend
 
-### Use `B8\Storage\Rdbms` when:
+### Use `ByJG\TextClassifier\Storage\Rdbms` when:
 - You have an existing relational database
 - Training data needs to survive process restarts
 - Multiple processes or servers share the same filter
@@ -54,11 +54,11 @@ Both the BinaryClassifier spam filter and NaiveBayes classifier use pluggable st
 ### Use `NaiveBayes\Storage\Rdbms` when:
 - Model is updated from multiple processes
 - You need durable, consistent storage
-- Sharing the database with B8
+- Sharing the database with BinaryClassifier
 
 ## Implementing a custom storage backend
 
-### For B8
+### For BinaryClassifier
 
 Implement `ByJG\TextClassifier\Storage\StorageInterface`. The key methods are:
 
@@ -71,11 +71,11 @@ public function storageUpdate(Word $word): void;
 public function storageDel(string $token): void;
 ```
 
-Extend `B8\Storage\Base` to inherit the `getInternals()`, `getTokens()`, and `processText()` implementations.
+Extend `ByJG\TextClassifier\Storage\Base` to inherit the `getInternals()`, `getTokens()`, and `processText()` implementations.
 
 ### For NaiveBayes
 
-Implement `B8\NaiveBayes\Storage\StorageInterface` directly:
+Implement `ByJG\TextClassifier\NaiveBayes\Storage\StorageInterface` directly:
 
 ```php
 public function getCategories(): array;

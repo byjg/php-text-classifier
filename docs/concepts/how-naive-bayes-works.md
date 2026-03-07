@@ -83,15 +83,15 @@ A `log_sum` of 0 produces a score of `0.5`. Large positive values (many weak ham
 
 ## Tokens with no total count
 
-If a token has never been seen in any category, it contributes no signal and is skipped entirely. This differs from B8's degeneration fallback — NaiveBayes does not use word variants.
+If a token has never been seen in any category, it contributes no signal and is skipped entirely. This differs from `BinaryClassifier`'s degeneration fallback — NaiveBayes does not use word variants.
 
 ## Categories with zero inverse doc count
 
 If a category contains all the trained documents (i.e. `doc_count(not-C) = 0`), that category is skipped. This prevents division by zero and typically indicates insufficient training data diversity.
 
-## Differences from B8
+## Differences from BinaryClassifier
 
-| Aspect | B8 | NaiveBayes |
+| Aspect | BinaryClassifier | NaiveBayes |
 |---|---|---|
 | Classes | Binary (spam/ham) | N arbitrary categories |
 | Unknown tokens | Degeneration fallback | Skipped |

@@ -53,9 +53,9 @@ A token is valid if:
 
 Tokens are counted by occurrence. If the word "cheap" appears three times in the text, `$tokens['cheap'] = 3`. This count is used in both training and classification — the token's contribution scales with its frequency.
 
-## Special token: `b8*no_tokens`
+## Special token: `tc*no_tokens`
 
-If the entire tokenisation process produces no valid tokens, a single synthetic token `b8*no_tokens` with count `1` is returned. This prevents an empty result that would cause divide-by-zero issues downstream.
+If the entire tokenisation process produces no valid tokens, a single synthetic token `tc*no_tokens` with count `1` is returned. This prevents an empty result that would cause divide-by-zero issues downstream.
 
 ## ConfigLexer quick reference
 

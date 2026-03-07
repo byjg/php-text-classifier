@@ -71,7 +71,7 @@ class Rdbms extends Base
 
         $this->mapper = new Mapper(
             Word::class,
-            'b8_wordlist',
+            'tc_wordlist',
             'token'
         );
 

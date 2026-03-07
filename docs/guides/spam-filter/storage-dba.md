@@ -40,8 +40,8 @@ Creates a new gdbm file at the specified path using `dba_open($path, 'c', 'gdbm'
 
 | key | value |
 |---|---|
-| `b8*dbversion` | `3` |
-| `b8*texts` | `0 0` (ham count, spam count) |
+| `tc*dbversion` | `3` |
+| `tc*texts` | `0 0` (ham count, spam count) |
 
 **Call this once on a new, empty path.** Calling it on an existing file will fail because the file already exists and is not empty.
 

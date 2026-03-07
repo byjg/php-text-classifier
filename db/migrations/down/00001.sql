@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS b8_wordlist;
+DROP TABLE IF EXISTS tc_wordlist;

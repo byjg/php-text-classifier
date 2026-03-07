@@ -10,17 +10,17 @@ Both the BinaryClassifier spam filter and NaiveBayes RDBMS backends use the same
 
 | File | Version | Description |
 |---|---|---|
-| `db/migrations/up/00001.sql` | 1 | Creates `b8_wordlist` and seeds internal variables |
+| `db/migrations/up/00001.sql` | 1 | Creates `tc_wordlist` and seeds internal variables |
 | `db/migrations/up/00002.sql` | 2 | Creates `nb_internals` and `nb_wordlist` |
-| `db/migrations/down/00001.sql` | — | Drops `b8_wordlist` |
+| `db/migrations/down/00001.sql` | — | Drops `tc_wordlist` |
 | `db/migrations/down/00002.sql` | — | Drops `nb_wordlist` and `nb_internals` |
 
 ## Tables
 
-### `b8_wordlist` — BinaryClassifier spam filter tokens
+### `tc_wordlist` — BinaryClassifier spam filter tokens
 
 ```sql
-CREATE TABLE b8_wordlist (
+CREATE TABLE tc_wordlist (
     token      VARCHAR(255) NOT NULL,
     count_ham  INTEGER DEFAULT NULL,
     count_spam INTEGER DEFAULT NULL,
@@ -38,8 +38,8 @@ CREATE TABLE b8_wordlist (
 
 | token | count_ham | count_spam | Purpose |
 |---|---|---|---|
-| `b8*dbversion` | `3` | `NULL` | Schema version check |
-| `b8*texts` | `0` | `0` | Total ham / spam text counts |
+| `tc*dbversion` | `3` | `NULL` | Schema version check |
+| `tc*texts` | `0` | `0` | Total ham / spam text counts |
 
 ### `nb_internals` — NaiveBayes document counts
 
@@ -85,7 +85,7 @@ $storage = new \ByJG\TextClassifier\Storage\Rdbms($uri, $degenerator);
 $storage->createDatabase();
 
 // NaiveBayes
-$storage = new \B8\NaiveBayes\Storage\Rdbms($uri);
+$storage = new \ByJG\TextClassifier\NaiveBayes\Storage\Rdbms($uri);
 $storage->createDatabase();
 ```
 

@@ -10,7 +10,7 @@ sidebar_position: 1
 |---|---|
 | PHP | `>=8.3 <8.6` |
 | Composer | any |
-| `ext-dba` | Only for BerkeleyDB storage |
+| `ext-dba` | Only for GDBM storage |
 
 ## Install via Composer
 
@@ -20,7 +20,7 @@ composer require byjg/text-classifier
 
 ## Storage backend requirements
 
-b8 supports multiple storage backends. Choose based on your use case:
+The library supports multiple storage backends. Choose based on your use case:
 
 | Backend | Engine | Extra requirement |
 |---|---|---|
@@ -29,7 +29,7 @@ b8 supports multiple storage backends. Choose based on your use case:
 | `NaiveBayes\Storage\Rdbms` | NaiveBayes | None |
 | `NaiveBayes\Storage\Memory` | NaiveBayes | None |
 
-### Enable ext-dba (BerkeleyDB only)
+### Enable ext-dba (GDBM only)
 
 ```bash
 # Ubuntu / Debian
@@ -55,14 +55,15 @@ use ByJG\TextClassifier\Storage\Rdbms;
 use ByJG\Util\Uri;
 
 $storage = new Rdbms(
-    new Uri('sqlite:///tmp/b8_verify.db'),
+    new Uri('sqlite:///tmp/classifier_verify.db'),
     new StandardDegenerator(new ConfigDegenerator())
 );
 $storage->createDatabase();
 
-$b8 = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, new StandardLexer(new ConfigLexer()));
+$classifier = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, new StandardLexer(new ConfigLexer()));
 
-echo $b8->classify('hello world'); // prints 0.5 (no training yet)
+$result = $classifier->classify('hello world');
+echo $result->score; // prints 0.5 (no training yet)
 ```
 
 ## Next steps

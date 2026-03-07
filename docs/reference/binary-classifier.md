@@ -124,9 +124,9 @@ Reverses a previous `learn()` call. Parameters and return values identical to `l
 
 ## Related
 
-- [ConfigBinaryClassifier reference](config-b8.md)
+- [ConfigBinaryClassifier reference](config-binary-classifier.md)
 - [ConfigLlm reference](config-llm.md)
-- [How B8 works](../concepts/how-b8-works.md)
+- [How B8 works](../concepts/how-binary-classifier-works.md)
 - [Storage backends](../concepts/storage-backends.md)
 - [Error codes](error-codes.md)
 - [LLM-Assisted Classification](../guides/llm-assisted-classification.md)

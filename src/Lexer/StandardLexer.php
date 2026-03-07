@@ -118,7 +118,7 @@ class StandardLexer implements LexerInterface
         # Be sure not to return an empty array
         /** @psalm-suppress RedundantCondition */
         if (count($this->_tokens) == 0) {
-            $this->_tokens['b8*no_tokens'] = 1;
+            $this->_tokens['tc*no_tokens'] = 1;
         }
 
         # Return a list of all found tokens
@@ -134,8 +134,8 @@ class StandardLexer implements LexerInterface
      */
     private function _isValid($token)
     {
-        # Just to be sure that the token's name won't collide with b8's internal variables
-        if(substr($token, 0, 3) == 'b8*') {
+        # Just to be sure that the token's name won't collide with internal variables
+        if(substr($token, 0, 3) == 'tc*') {
             return false;
         }
 

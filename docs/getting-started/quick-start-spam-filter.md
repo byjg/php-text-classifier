@@ -29,7 +29,7 @@ use ByJG\TextClassifier\ConfigBinaryClassifier;
 use ByJG\TextClassifier\Lexer\ConfigLexer;
 use ByJG\TextClassifier\Lexer\StandardLexer;
 
-$b8 = new BinaryClassifier(
+$classifier = new BinaryClassifier(
     new ConfigBinaryClassifier(),
     $storage,
     new StandardLexer(new ConfigLexer())
@@ -40,14 +40,14 @@ $b8 = new BinaryClassifier(
 
 ```php
 // Mark texts as spam
-$b8->learn('Buy cheap pills now! Limited offer!!!', BinaryClassifier::SPAM);
-$b8->learn('You have won a prize. Click here to claim.', BinaryClassifier::SPAM);
-$b8->learn('Earn money fast working from home', BinaryClassifier::SPAM);
+$classifier->learn('Buy cheap pills now! Limited offer!!!', BinaryClassifier::SPAM);
+$classifier->learn('You have won a prize. Click here to claim.', BinaryClassifier::SPAM);
+$classifier->learn('Earn money fast working from home', BinaryClassifier::SPAM);
 
 // Mark texts as ham
-$b8->learn('Meeting rescheduled to Tuesday at 2pm', BinaryClassifier::HAM);
-$b8->learn('Please review the attached pull request', BinaryClassifier::HAM);
-$b8->learn('Your order has been shipped', BinaryClassifier::HAM);
+$classifier->learn('Meeting rescheduled to Tuesday at 2pm', BinaryClassifier::HAM);
+$classifier->learn('Please review the attached pull request', BinaryClassifier::HAM);
+$classifier->learn('Your order has been shipped', BinaryClassifier::HAM);
 ```
 
 ## 4. Classify new text
@@ -55,7 +55,7 @@ $b8->learn('Your order has been shipped', BinaryClassifier::HAM);
 ```php
 use ByJG\TextClassifier\ClassificationResult;
 
-$result = $b8->classify('win money fast click now');
+$result = $classifier->classify('win money fast click now');
 
 if (!($result instanceof ClassificationResult)) {
     // handle error
@@ -76,13 +76,13 @@ If the filter classified something wrong, unlearn it and re-learn with the corre
 
 ```php
 // Previously trained as ham, but it was actually spam
-$b8->unlearn('Your invoice is attached', BinaryClassifier::HAM);
-$b8->learn('Your invoice is attached', BinaryClassifier::SPAM);
+$classifier->unlearn('Your invoice is attached', BinaryClassifier::HAM);
+$classifier->learn('Your invoice is attached', BinaryClassifier::SPAM);
 ```
 
 ## What happens on first classify
 
-Before any training, `classify()` returns a result with `score = 0.5` — the filter has no opinion. The more you train it, the more accurate it becomes. The quality of training data matters more than the quantity.
+Before any training, `classify()` returns a result with `score = 0.5` — the classifier has no opinion. The more you train it, the more accurate it becomes. The quality of training data matters more than the quantity.
 
 ## Next steps
 

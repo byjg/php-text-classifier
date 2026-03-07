@@ -42,11 +42,11 @@ abstract class Base implements StorageInterface
      */
     protected ?DegeneratorInterface $degenerator = null;
 
-    const INTERNALS_TEXTS     = 'b8*texts';
-    const INTERNALS_DBVERSION = 'b8*dbversion';
+    const INTERNALS_TEXTS     = 'tc*texts';
+    const INTERNALS_DBVERSION = 'tc*dbversion';
 
     /**
-     * Checks if a b8 database is used and if it's version is okay.
+     * Checks if the database version is compatible.
      *
      * @return void throws an exception if something's wrong with the database
      * @throws Exception
@@ -63,7 +63,7 @@ abstract class Base implements StorageInterface
         }
 
         throw new Exception(
-            'b8_storage_base: The connected database is not a b8 v' . BinaryClassifier::DBVERSION . ' database.'
+            'The connected database is not a TextClassifier v' . BinaryClassifier::DBVERSION . ' database.'
         );
     }
 

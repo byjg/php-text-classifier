@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # ConfigLexer
 
-`B8\Lexer\ConfigLexer` controls tokenisation behaviour. Used by both `B8` and `NaiveBayes`. All setters return `$this` for fluent chaining.
+`ByJG\TextClassifier\Lexer\ConfigLexer` controls tokenisation behaviour. Used by both `BinaryClassifier` and `NaiveBayes`. All setters return `$this` for fluent chaining.
 
 ## Parameters
 

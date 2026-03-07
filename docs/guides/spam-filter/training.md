@@ -4,16 +4,16 @@ sidebar_position: 1
 
 # Training the Spam Filter
 
-Training teaches b8 which texts are spam and which are ham. The filter learns by counting how often tokens appear in each category, weighted by the total number of trained texts per category.
+Training teaches the classifier which texts are spam and which are ham. The filter learns by counting how often tokens appear in each category, weighted by the total number of trained texts per category.
 
 ## Basic training
 
 ```php
-$b8->learn($text, BinaryClassifier::SPAM);  // mark as spam
-$b8->learn($text, BinaryClassifier::HAM);   // mark as ham
+$classifier->learn($text, BinaryClassifier::SPAM);  // mark as spam
+$classifier->learn($text, BinaryClassifier::HAM);   // mark as ham
 ```
 
-Both constants are defined on the `B8` class:
+Both constants are defined on `BinaryClassifier`:
 
 ```php
 BinaryClassifier::SPAM  // = 'spam'
@@ -25,8 +25,8 @@ BinaryClassifier::HAM   // = 'ham'
 Remove a previously trained text from the model:
 
 ```php
-$b8->unlearn($text, BinaryClassifier::SPAM);
-$b8->unlearn($text, BinaryClassifier::HAM);
+$classifier->unlearn($text, BinaryClassifier::SPAM);
+$classifier->unlearn($text, BinaryClassifier::HAM);
 ```
 
 Use this to correct mistakes or to remove old training data that no longer reflects current patterns.
@@ -37,8 +37,8 @@ The recommended correction workflow:
 
 ```php
 // Text was learned as ham but should have been spam
-$b8->unlearn($text, BinaryClassifier::HAM);
-$b8->learn($text, BinaryClassifier::SPAM);
+$classifier->unlearn($text, BinaryClassifier::HAM);
+$classifier->learn($text, BinaryClassifier::SPAM);
 ```
 
 Always unlearn before re-learning with a different label. Skipping the unlearn step adds weight to both categories, which degrades accuracy.
@@ -50,7 +50,7 @@ There is no bulk training API — call `learn()` in a loop:
 ```php
 $spamTexts = ['...', '...', '...'];
 foreach ($spamTexts as $text) {
-    $b8->learn($text, BinaryClassifier::SPAM);
+    $classifier->learn($text, BinaryClassifier::SPAM);
 }
 ```
 

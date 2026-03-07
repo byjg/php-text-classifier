@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Degenerator
 
-The degenerator is used only by the B8 binary spam filter. It generates "degenerated" variants of a token so that the filter can fall back to related forms when an exact token is not found in training data.
+The degenerator is used only by the `BinaryClassifier` spam filter. It generates "degenerated" variants of a token so that the filter can fall back to related forms when an exact token is not found in training data.
 
 ## Purpose
 
@@ -27,7 +27,7 @@ Duplicates (variants identical to the original token) are excluded.
 
 ## How variants are selected during classification
 
-B8 tries all degenerated variants against the storage. If one or more are found, the one with probability furthest from `0.5` is used. This selects the most "informative" variant:
+`BinaryClassifier` tries all degenerated variants against the storage. If one or more are found, the one with probability furthest from `0.5` is used. This selects the most "informative" variant:
 
 ```php
 // Pseudocode of selection logic in BinaryClassifier::_getProbability()
