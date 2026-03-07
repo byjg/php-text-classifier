@@ -9,10 +9,12 @@
 
 A PHP library for statistical text classification. Provides two independent engines:
 
-- **B8** — Binary Robinson-Fisher Bayesian filter. Classifies text as spam or ham, returning a probability score between `0.0` (ham) and `1.0` (spam). Designed for high-accuracy two-class filtering with word degeneration support.
-- **NaiveBayes** — Multi-class Naive Bayes classifier. Classifies text into any number of user-defined categories, returning a ranked score map. Suitable for language detection, topic tagging, content routing, and similar tasks.
+- **BinaryClassifier** — Binary Robinson-Fisher Bayesian filter. Classifies text as spam or ham. Designed for high-accuracy two-class filtering with word degeneration support.
+- **NaiveBayes** — Multi-class Naive Bayes classifier. Classifies text into any number of user-defined categories. Suitable for language detection, topic tagging, content routing, and similar tasks.
 
-Both engines share the same tokenization pipeline (`StandardLexer`, `StandardDegenerator`) and support pluggable storage backends (in-memory, SQLite, MySQL, PostgreSQL, BerkeleyDB).
+Both engines return a `ClassificationResult` with the winning category, confidence score, and all category scores. Both support optional LLM injection for automatic escalation when the statistical model is uncertain — the LLM decision is fed back as training data, improving the model over time (active learning).
+
+Both engines share the same tokenisation pipeline (`StandardLexer`, `StandardDegenerator`) and support pluggable storage backends (in-memory, SQLite, MySQL, PostgreSQL, GDBM).
 
 ## Installation
 
@@ -20,7 +22,7 @@ Both engines share the same tokenization pipeline (`StandardLexer`, `StandardDeg
 composer require byjg/text-classifier
 ```
 
-Requires PHP `>=8.3`. The BerkeleyDB storage backend additionally requires `ext-dba`.
+Requires PHP `>=8.3`. The GDBM storage backend additionally requires `ext-dba`.
 
 ## Quick Example
 
@@ -44,8 +46,9 @@ $b8 = new BinaryClassifier(new ConfigBinaryClassifier(), $storage, new StandardL
 $b8->learn('Buy cheap pills now!!!', BinaryClassifier::SPAM);
 $b8->learn('Meeting at 3pm in the conference room', BinaryClassifier::HAM);
 
-$score = $b8->classify('buy pills online cheap');
-// $score is close to 1.0 (spam)
+$result = $b8->classify('buy pills online cheap');
+// $result->choice === 'spam'
+// $result->score  is close to 1.0
 ```
 
 **Multi-class classifier:**
@@ -61,8 +64,10 @@ $nb = new NaiveBayes(new Memory(), new StandardLexer(new ConfigLexer()));
 $nb->train('PHP is a programming language', 'tech');
 $nb->train('The cat sat on the mat', 'animals');
 
-$scores = $nb->classify('programming language');
-// ['tech' => 0.93, 'animals' => 0.07]
+$result = $nb->classify('programming language');
+// $result->choice          === 'tech'
+// $result->score           === 0.93
+// $result->scores          === ['tech' => 0.93, 'animals' => 0.07]
 ```
 
 ## Documentation
@@ -72,6 +77,7 @@ $scores = $nb->classify('programming language');
 | [Getting Started](docs/getting-started/installation.md) | Installation, requirements, first working example |
 | [Guides: Spam Filter](docs/guides/spam-filter/training.md) | Training, classifying, choosing storage |
 | [Guides: Multi-class](docs/guides/multi-class/training.md) | Training categories, classifying, persistence |
+| [Guide: LLM-Assisted Classification](docs/guides/llm-assisted-classification.md) | Automatic LLM fallback and active learning |
 | [Concepts](docs/concepts/how-b8-works.md) | How the algorithms work, architecture overview |
 | [Reference](docs/reference/b8.md) | Full API, configuration parameters, error codes |
 
@@ -85,4 +91,6 @@ This library is inspired by the original **b8** spam filter written by [Tobias L
 flowchart TD
     byjg/text-classifier --> byjg/micro-orm
     byjg/text-classifier --> byjg/migration
+    byjg/text-classifier --> byjg/llm-api-objects
+    byjg/text-classifier --> openai-php/client
 ```

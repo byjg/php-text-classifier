@@ -2,9 +2,9 @@
 sidebar_position: 4
 ---
 
-# Storage: BerkeleyDB (DBA)
+# Storage: GDBM (DBA)
 
-`B8\Storage\Dba` persists the word list to a BerkeleyDB/gdbm file using PHP's `dba_*` extension. It is a fast, embedded key-value store with no external server dependency.
+`ByJG\TextClassifier\Storage\Dba` persists the word list to a GDBM file using PHP's `dba_*` extension. It is a fast, embedded key-value store with no external server dependency.
 
 ## Requirements
 

@@ -50,7 +50,7 @@ class Dba extends Base
     }
 
     /**
-     * Creates a new BerkeleyDB database file and seeds the required internal variables.
+     * Creates a new GDBM database file and seeds the required internal variables.
      * Call this once to set up a new database.
      */
     public function createDatabase(): void

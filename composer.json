@@ -1,8 +1,8 @@
 {
   "name": "byjg/text-classifier",
   "type": "library",
-  "description": "A statistical (Bayesian) spam filter written in PHP",
-  "keywords": ["spam", "filter"],
+  "description": "A PHP text classifier supporting binary spam filtering (Robinson-Fisher Bayesian) and multi-class Naive Bayes classification, with optional LLM-assisted active learning fallback.",
+  "keywords": ["spam", "filter", "text-classifier", "naive-bayes", "bayesian", "llm", "active-learning", "classification"],
   "homepage": "https://github.com/byjg/b8",
   "minimum-stability": "dev",
   "prefer-stable": true,

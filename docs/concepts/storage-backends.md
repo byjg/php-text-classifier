@@ -11,7 +11,7 @@ Both the BinaryClassifier spam filter and NaiveBayes classifier use pluggable st
 | Backend | Class | Persistence | External dependency |
 |---|---|---|---|
 | RDBMS | `B8\Storage\Rdbms` | Database | `byjg/micro-orm` (bundled) |
-| BerkeleyDB | `B8\Storage\Dba` | File | `ext-dba` PHP extension |
+| GDBM | `ByJG\TextClassifier\Storage\Dba` | File | `ext-dba` PHP extension |
 
 ## NaiveBayes backends
 
@@ -41,7 +41,7 @@ Both the BinaryClassifier spam filter and NaiveBayes classifier use pluggable st
 - Multiple processes or servers share the same filter
 - You want SQL-level inspection of token data
 
-### Use `B8\Storage\Dba` when:
+### Use `ByJG\TextClassifier\Storage\Dba` when:
 - No database server is available
 - You want a simple, self-contained file
 - Single-process only
