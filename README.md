@@ -1,4 +1,11 @@
+---
+sidebar_key: text-classifier
+tags: [php, text-classification, ai]
+---
+
 # text-classifier — Bayesian Text Classifier
+
+A PHP library for statistical text classification. Provides two independent engines:
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml)
@@ -6,8 +13,6 @@
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/text-classifier/)
 [![GitHub license](https://img.shields.io/github/license/byjg/text-classifier.svg)](https://opensource.byjg.com/opensource/licensing.html)
 [![GitHub release](https://img.shields.io/github/release/byjg/text-classifier.svg)](https://github.com/byjg/text-classifier/releases/)
-
-A PHP library for statistical text classification. Provides two independent engines:
 
 - **BinaryClassifier** — Binary Robinson-Fisher Bayesian filter. Classifies text as spam or ham. Designed for high-accuracy two-class filtering with word degeneration support.
 - **NaiveBayes** — Multi-class Naive Bayes classifier. Classifies text into any number of user-defined categories. Suitable for language detection, topic tagging, content routing, and similar tasks.
