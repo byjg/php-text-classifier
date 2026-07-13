@@ -7,8 +7,8 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "byjg/micro-orm": "^6.0",
-    "byjg/migration": "^6.0",
+    "byjg/micro-orm": "^7.0",
+    "byjg/migration": "^7.0",
     "byjg/llm-api-objects": "^6.0",
     "openai-php/client": "^0.19",
     "php": ">=8.3 <8.6",
