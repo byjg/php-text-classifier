@@ -11,7 +11,7 @@ A PHP library for statistical text classification. Provides two independent engi
 [![Build Status](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/text-classifier/)
-[![GitHub license](https://img.shields.io/github/license/byjg/text-classifier.svg)](https://opensource.byjg.com/opensource/licensing.html)
+[![GitHub license](https://img.shields.io/github/license/byjg/text-classifier.svg)](https://opensource.byjg.com/license/)
 [![GitHub release](https://img.shields.io/github/release/byjg/text-classifier.svg)](https://github.com/byjg/text-classifier/releases/)
 
 - **BinaryClassifier** — Binary Robinson-Fisher Bayesian filter. Classifies text as spam or ham. Designed for high-accuracy two-class filtering with word degeneration support.
@@ -90,12 +90,3 @@ $result = $nb->classify('programming language');
 
 This library is inspired by the original **b8** spam filter written by [Tobias Leupold](mailto:tobias.leupold@web.de). The core algorithm, Robinson-Fisher probability model, token degeneration approach, and the `tc*` internal variable convention all originate from his work. This project modernises the codebase for PHP 8.3+, replaces the storage layer with `byjg/micro-orm` and `byjg/migration`, and adds a multi-class NaiveBayes engine built on the same tokenisation pipeline.
 
-## Dependencies
-
-```mermaid
-flowchart TD
-    byjg/text-classifier --> byjg/micro-orm
-    byjg/text-classifier --> byjg/migration
-    byjg/text-classifier --> byjg/llm-api-objects
-    byjg/text-classifier --> openai-php/client
-```
