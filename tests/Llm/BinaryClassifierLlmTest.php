@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Llm;
+namespace Tests\Llm;
 
 use ByJG\TextClassifier\BinaryClassifier;
 use ByJG\TextClassifier\ConfigBinaryClassifier;

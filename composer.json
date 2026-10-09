@@ -1,9 +1,10 @@
 {
   "name": "byjg/text-classifier",
   "type": "library",
+  "license": "LGPL-2.1-only",
   "description": "A PHP text classifier supporting binary spam filtering (Robinson-Fisher Bayesian) and multi-class Naive Bayes classification, with optional LLM-assisted active learning fallback.",
   "keywords": ["spam", "filter", "text-classifier", "naive-bayes", "bayesian", "llm", "active-learning", "classification"],
-  "homepage": "https://github.com/byjg/b8",
+  "homepage": "https://github.com/byjg/php-text-classifier",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
@@ -22,7 +23,8 @@
   "require-dev": {
     "phpunit/phpunit": "^12.5",
 
-    "ext-dba": "*"
+    "ext-dba": "*",
+    "psalm/phar": "^6.16"
   },
   "autoload": {
     "psr-4": {
@@ -31,7 +33,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Test\\": "tests/"
+      "Tests\\": "tests/"
     }
   },
   "config": {
@@ -41,9 +43,6 @@
   },
   "scripts": {
     "test": "vendor/bin/phpunit",
-    "psalm": [
-      "@composer --working-dir=tools/psalm update --no-interaction",
-      "tools/psalm/vendor/bin/psalm --threads=1"
-    ]
+    "psalm": "vendor/bin/psalm.phar"
   }
 }

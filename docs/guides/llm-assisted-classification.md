@@ -110,6 +110,41 @@ Escalation triggers when any of:
 
 ---
 
+## Bootstrapping a model from scratch
+
+With no training data, every `classify()` call escalates. Instead of paying for that one call at
+a time in production, label a seed set up front: call the LLM directly — it is a plain
+`LlmInterface` — and train the classifier with its answers. Then wire the LLM in as the fallback.
+
+```php
+$llm        = new OpenAiLlmClient($openai, 'gpt-4o-mini');
+$categories = ['tech', 'animals', 'sports', 'cooking'];
+$storage    = new Memory();
+
+// 1. Bootstrap: no LLM injected yet; the LLM only labels the seed phrases
+$nb = new NaiveBayes($storage, new StandardLexer(new ConfigLexer()));
+
+foreach ($seedPhrases as $text) {
+    $nb->train($text, $llm->classify($text, $categories));
+}
+
+// 2. Production: same storage, now with the LLM as fallback
+$nb = new NaiveBayes(
+    $storage,
+    new StandardLexer(new ConfigLexer()),
+    llm: $llm,
+    configLlm: (new ConfigLlm())->setAutoLearn(true),
+);
+
+$result = $nb->classify('Docker containers package applications with all their dependencies');
+```
+
+The statistical model now answers the easy cases on its own and only escalates when it is
+uncertain. A runnable version against a local Ollama is in
+[examples/llm-bootstrap.php](https://github.com/byjg/php-text-classifier/blob/master/examples/llm-bootstrap.php).
+
+---
+
 ## Reading the ClassificationResult
 
 Both classifiers return a `ClassificationResult` with the same fields:
