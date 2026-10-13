@@ -26,7 +26,7 @@ class OpenAiLlmClient implements LlmInterface
 
         $chat = new Chat(
             model: $this->model,
-            messages: [new Message(role: Role::user, message: $text)],
+            messages: [new Message(role: Role::User, message: $text)],
             system: $system
         );
 
