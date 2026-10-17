@@ -64,7 +64,7 @@ key:   "some_word"
 value: "count_ham count_spam"    e.g. "12 5"
 ```
 
-Internal variables use a `b8*` prefix to avoid collisions with real tokens.
+Internal variables use a `tc*` prefix to avoid collisions with real tokens.
 
 ## When to use this backend
 

@@ -96,7 +96,7 @@ The variant with the probability furthest from `0.5` is used. This allows the fi
 
 When `learn($text, $category)` is called:
 1. The text is tokenised
-2. The total text count for the category is incremented (`b8*texts`)
+2. The total text count for the category is incremented (`tc*texts`)
 3. Each token's count for that category is incremented
 
 When `unlearn($text, $category)` is called, the same steps are reversed.

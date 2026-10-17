@@ -45,7 +45,7 @@ uncertain = empty(scores)
 
 Default: `minConfidence = 0.65`, `minMargin = 0.15`.
 
-- **Empty result** — no categories have been trained yet, or all docs are in one category (no cross-category comparison is possible).
+- **Empty result** — all docs are in one category (no cross-category comparison is possible). With no category trained at all there is nothing for the LLM to choose from, so `classify()` returns `null` without escalating.
 - **Low confidence** — the winning category has a weak score.
 - **Low margin** — two categories are nearly tied; the classifier is not sure which one is better.
 

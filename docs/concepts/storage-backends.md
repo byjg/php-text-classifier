@@ -66,9 +66,9 @@ Implement `ByJG\TextClassifier\Storage\StorageInterface`. The key methods are:
 public function storageOpen(): void;
 public function storageClose(): void;
 public function storageRetrieve(array|string $tokens): array; // returns Word[]
-public function storagePut(Word $word): void;
-public function storageUpdate(Word $word): void;
-public function storageDel(string $token): void;
+public function storagePut($word): void;       // receives a Word
+public function storageUpdate($word): void;    // receives a Word
+public function storageDel($token): void;      // receives the token string
 ```
 
 Extend `ByJG\TextClassifier\Storage\Base` to inherit the `getInternals()`, `getTokens()`, and `processText()` implementations.
