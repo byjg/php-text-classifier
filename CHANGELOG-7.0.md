@@ -7,6 +7,15 @@
 
 - None.
 
+## Bug Fixes
+
+### `StandardLexer`: the text `"0"` was treated as empty
+
+`getTokens()` checked for empty input with `empty($text)`, which is also true for the string `"0"`,
+so classifying or training on `"0"` returned `LEXER_TEXT_EMPTY` instead of tokenizing it. Only the
+empty string `''` is now rejected. Whitespace-only text is unchanged: it was never considered empty
+and still yields no tokens.
+
 ## Requirements
 
 - PHP 8.3, 8.4, 8.5 and 8.6 are now supported: `"php": ">=8.3 <8.7"`.
