@@ -18,7 +18,7 @@ class Rdbms implements StorageInterface
     public function __construct(Uri|string $uri)
     {
         $this->uri = $uri instanceof Uri ? $uri : new Uri($uri);
-        $driver    = Factory::getDbRelationalInstance((string)$this->uri);
+        $driver    = Factory::getDbInstance($this->uri);
         $this->db  = new DatabaseExecutor($driver);
     }
 
@@ -36,7 +36,7 @@ class Rdbms implements StorageInterface
         $migration->reset();
 
         // Reinitialize after reset — migration may recreate the underlying database file
-        $driver   = Factory::getDbRelationalInstance((string)$this->uri);
+        $driver   = Factory::getDbInstance($this->uri);
         $this->db = new DatabaseExecutor($driver);
     }
 
