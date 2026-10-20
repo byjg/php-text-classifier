@@ -90,8 +90,9 @@ $storage->createDatabase();
 ```
 
 Both methods call `Migration::reset()`, which:
-1. Drops the migration version table (if it exists)
-2. Runs all `up` scripts in numerical order
+1. Drops and recreates the database
+2. Recreates the migration version table and runs `db/base.sql`
+3. Runs all `up` scripts in numerical order
 
 **Warning:** `createDatabase()` is destructive. Do not call it on a database that already contains training data.
 

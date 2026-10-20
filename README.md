@@ -8,11 +8,12 @@ tags: [php, text-classification, ai]
 A PHP library for statistical text classification. Provides two independent engines:
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
-[![Build Status](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/text-classifier/actions/workflows/phpunit.yml)
-[![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
-[![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/text-classifier/)
-[![GitHub license](https://img.shields.io/github/license/byjg/text-classifier.svg)](https://opensource.byjg.com/opensource/licensing.html)
-[![GitHub release](https://img.shields.io/github/release/byjg/text-classifier.svg)](https://github.com/byjg/text-classifier/releases/)
+[![Build Status](https://github.com/byjg/php-text-classifier/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-text-classifier/actions/workflows/phpunit.yml)
+[![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](https://opensource.byjg.com)
+[![Install MCP Server](https://img.shields.io/badge/Install-MCP_Server-8A2BE2?logo=modelcontextprotocol&logoColor=white)](https://opensource.byjg.com/docs/ai/mcpserver-byjg-docs/)
+[![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-text-classifier/)
+[![GitHub license](https://img.shields.io/github/license/byjg/php-text-classifier.svg)](https://opensource.byjg.com/license/)
+[![GitHub release](https://img.shields.io/github/release/byjg/php-text-classifier.svg)](https://github.com/byjg/php-text-classifier/releases/)
 
 - **BinaryClassifier** — Binary Robinson-Fisher Bayesian filter. Classifies text as spam or ham. Designed for high-accuracy two-class filtering with word degeneration support.
 - **NaiveBayes** — Multi-class Naive Bayes classifier. Classifies text into any number of user-defined categories. Suitable for language detection, topic tagging, content routing, and similar tasks.
@@ -90,12 +91,11 @@ $result = $nb->classify('programming language');
 
 This library is inspired by the original **b8** spam filter written by [Tobias Leupold](mailto:tobias.leupold@web.de). The core algorithm, Robinson-Fisher probability model, token degeneration approach, and the `tc*` internal variable convention all originate from his work. This project modernises the codebase for PHP 8.3+, replaces the storage layer with `byjg/micro-orm` and `byjg/migration`, and adds a multi-class NaiveBayes engine built on the same tokenisation pipeline.
 
-## Dependencies
+## Running Tests
 
-```mermaid
-flowchart TD
-    byjg/text-classifier --> byjg/micro-orm
-    byjg/text-classifier --> byjg/migration
-    byjg/text-classifier --> byjg/llm-api-objects
-    byjg/text-classifier --> openai-php/client
+```bash
+vendor/bin/phpunit
 ```
+
+----
+[Open source ByJG](https://opensource.byjg.com)

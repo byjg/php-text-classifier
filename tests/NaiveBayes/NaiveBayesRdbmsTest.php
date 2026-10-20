@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\NaiveBayes;
+namespace Tests\NaiveBayes;
 
 use ByJG\TextClassifier\NaiveBayes\Storage\Rdbms;
 use ByJG\Util\Uri;

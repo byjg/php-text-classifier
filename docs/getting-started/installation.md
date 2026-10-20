@@ -8,7 +8,7 @@ sidebar_position: 1
 
 | Requirement | Version |
 |---|---|
-| PHP | `>=8.3 <8.6` |
+| PHP | `>=8.3 <8.7` |
 | Composer | any |
 | `ext-dba` | Only for GDBM storage |
 

@@ -44,7 +44,7 @@ if ($result->score > 0.8) { /* spam */ }
 
 ## NaiveBayes error handling
 
-`NaiveBayes::classify()`, `train()`, and `untrain()` do not return error codes. They are void methods (train/untrain) or return an empty array (classify). Invalid input is handled silently:
+`NaiveBayes::classify()`, `train()`, and `untrain()` do not return error codes. They are void methods (train/untrain) or return `null` (classify). Invalid input is handled silently:
 
 - Non-string or empty text → lexer returns no tokens → no-op or empty result
 - No trained categories → `classify()` returns `null`

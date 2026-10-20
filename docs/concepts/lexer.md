@@ -46,7 +46,7 @@ Each resulting fragment is validated and, if valid, added to the token list.
 A token is valid if:
 
 - Its length is between `min_size` (default: `3`) and `max_size` (default: `30`)
-- It does not start with `b8*` (reserved for internal variables)
+- It does not start with `tc*` (reserved for internal variables)
 - It is not a pure number, unless `allow_numbers = true`
 
 ## Token counting

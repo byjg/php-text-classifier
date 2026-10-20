@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Storage;
+namespace Tests\Storage;
 
 use ByJG\TextClassifier\Degenerator\ConfigDegenerator;
 use ByJG\TextClassifier\Degenerator\StandardDegenerator;

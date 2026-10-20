@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\NaiveBayes;
+namespace Tests\NaiveBayes;
 
 use ByJG\TextClassifier\Lexer\ConfigLexer;
 use ByJG\TextClassifier\Lexer\StandardLexer;

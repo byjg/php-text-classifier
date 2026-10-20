@@ -10,7 +10,7 @@
  *           learning loop). No wrapper class needed.
  */
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use ByJG\TextClassifier\Lexer\ConfigLexer;
 use ByJG\TextClassifier\Lexer\StandardLexer;

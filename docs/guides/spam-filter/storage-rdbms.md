@@ -49,7 +49,8 @@ $storage->createDatabase();
 
 `createDatabase()` uses `byjg/migration` to apply the schema migrations located in the `db/` directory of this package. It calls `reset()` internally, which means:
 
-- Drops and recreates the migration version table
+- Drops and recreates the database
+- Recreates the migration version table and runs `db/base.sql`
 - Runs all `up` migration scripts from scratch
 
 **Call this once when setting up a new database.** Do not call it on a database that already contains training data — it will wipe the existing data.

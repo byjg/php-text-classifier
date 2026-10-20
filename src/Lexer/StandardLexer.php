@@ -81,7 +81,7 @@ class StandardLexer implements LexerInterface
         }
 
         # ... and if it's empty
-        if (empty($text) === true) {
+        if ($text === '') {
             return self::LEXER_TEXT_EMPTY;
         }
 

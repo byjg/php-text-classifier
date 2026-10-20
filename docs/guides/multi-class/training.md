@@ -40,7 +40,7 @@ Token counts are decremented proportionally. If a token count reaches zero, the 
 |---|---|
 | First `train()` for a new category name | Category is created automatically |
 | All samples untrained from a category | Category disappears from `classify()` results |
-| `classify()` with no trained categories | Returns empty array `[]` |
+| `classify()` with no trained categories | Returns `null` |
 
 ## Correcting a mistake
 

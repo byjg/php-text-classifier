@@ -104,9 +104,47 @@ echo $result->escalated;   // true/false
 ```
 
 Escalation triggers when any of:
-- `classify()` returns `null` (no categories trained yet)
+- The statistical model returns no scores (for example, only one category is trained)
 - The top score is below `minConfidence`
 - The gap between the top and second score is below `minMargin`
+
+The LLM can only choose among the categories already in storage: with no category trained at all, `classify()` returns `null` without calling the LLM.
+
+---
+
+## Bootstrapping a model from scratch
+
+With no training data, `classify()` has no categories to offer the LLM and returns `null`, and
+while the model is small almost every call escalates. Instead of paying for that one call at
+a time in production, label a seed set up front: call the LLM directly — it is a plain
+`LlmInterface` — and train the classifier with its answers. Then wire the LLM in as the fallback.
+
+```php
+$llm        = new OpenAiLlmClient($openai, 'gpt-4o-mini');
+$categories = ['tech', 'animals', 'sports', 'cooking'];
+$storage    = new Memory();
+
+// 1. Bootstrap: no LLM injected yet; the LLM only labels the seed phrases
+$nb = new NaiveBayes($storage, new StandardLexer(new ConfigLexer()));
+
+foreach ($seedPhrases as $text) {
+    $nb->train($text, $llm->classify($text, $categories));
+}
+
+// 2. Production: same storage, now with the LLM as fallback
+$nb = new NaiveBayes(
+    $storage,
+    new StandardLexer(new ConfigLexer()),
+    llm: $llm,
+    configLlm: (new ConfigLlm())->setAutoLearn(true),
+);
+
+$result = $nb->classify('Docker containers package applications with all their dependencies');
+```
+
+The statistical model now answers the easy cases on its own and only escalates when it is
+uncertain. A runnable version against a local Ollama is in
+[examples/llm-bootstrap.php](https://github.com/byjg/php-text-classifier/blob/master/examples/llm-bootstrap.php).
 
 ---
 
@@ -158,6 +196,8 @@ class MyCustomLlm implements LlmInterface
 ```
 
 The single `classify()` method is used for both binary (categories = `['spam', 'ham']`) and multi-class scenarios.
+
+The bundled `OpenAiLlmClient($client, $model = 'gpt-4o-mini')` throws an `UnexpectedValueException` when the model replies with a label that is not in `$categories`; the exception propagates out of the classifier's `classify()`.
 
 ---
 

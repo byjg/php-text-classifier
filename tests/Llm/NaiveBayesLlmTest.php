@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Llm;
+namespace Tests\Llm;
 
 use ByJG\TextClassifier\Lexer\ConfigLexer;
 use ByJG\TextClassifier\Lexer\StandardLexer;
