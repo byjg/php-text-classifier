@@ -75,7 +75,7 @@ class Rdbms extends Base
             'token'
         );
 
-        $dataset = Factory::getDbRelationalInstance((string)$this->uri);
+        $dataset = Factory::getDbInstance($this->uri);
 
         $this->repository = new Repository(new DatabaseExecutor($dataset), $this->mapper);
 
@@ -96,7 +96,7 @@ class Rdbms extends Base
         $migration->reset();
 
         // Reinitialize connection after migration reset
-        $dataset = Factory::getDbRelationalInstance((string)$this->uri);
+        $dataset = Factory::getDbInstance($this->uri);
         $this->repository = new Repository(new DatabaseExecutor($dataset), $this->mapper);
     }
 
