@@ -5,7 +5,7 @@ tags: [php, text-classification, ai]
 
 # text-classifier — Bayesian Text Classifier
 
-A PHP library for statistical text classification. Provides two independent engines:
+Classify text in PHP (spam or not, topic, language) with Bayesian filters that ask an LLM when they are unsure and learn from its answer. Two engines:
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/php-text-classifier/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-text-classifier/actions/workflows/phpunit.yml)
@@ -21,6 +21,26 @@ A PHP library for statistical text classification. Provides two independent engi
 Both engines return a `ClassificationResult` with the winning category, confidence score, and all category scores. Both support optional LLM injection for automatic escalation when the statistical model is uncertain — the LLM decision is fed back as training data, improving the model over time (active learning).
 
 Both engines share the same tokenisation pipeline (`StandardLexer`, `StandardDegenerator`) and support pluggable storage backends (in-memory, SQLite, MySQL, PostgreSQL, GDBM).
+
+## Why
+
+An LLM classifies text well, but calling one for every message is slow and costs money. A
+Bayesian filter is fast and free, but it is uncertain on the messages it has not seen yet.
+
+Text Classifier uses both. The statistical model answers the clear cases; only when its score
+falls in the uncertain range does it ask the LLM, and the LLM's answer is learned as training
+data:
+
+```php
+$classifier = new BinaryClassifier(
+    new ConfigBinaryClassifier(), $storage, $lexer,
+    llm: new OpenAiLlmClient($openai, 'gpt-4o-mini'),
+    configLlm: (new ConfigLlm())->setLowerBound(0.35)->setUpperBound(0.65)->setAutoLearn(true),
+);
+```
+
+Over time the model handles more on its own and the LLM is called less (active learning).
+The training data lives where you want it: memory, SQLite, MySQL, PostgreSQL or GDBM.
 
 ## Installation
 
