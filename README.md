@@ -1,9 +1,10 @@
 ---
 sidebar_key: text-classifier
+sidebar_category: text-content
 tags: [php, text-classification, ai]
 ---
 
-# text-classifier — Bayesian Text Classifier
+# Bayesian Text Classifier
 
 Classify text in PHP (spam or not, topic, language) with Bayesian filters that ask an LLM when they are unsure and learn from its answer. Two engines:
 
